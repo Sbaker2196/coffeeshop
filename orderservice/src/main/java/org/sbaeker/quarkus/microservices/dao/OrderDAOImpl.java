@@ -25,7 +25,7 @@ import org.sbaeker.quarkus.microservices.model.Order;
 public class OrderDAOImpl implements OrderDAO {
 
     @Inject
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     /**
      * Writes an order to the database.

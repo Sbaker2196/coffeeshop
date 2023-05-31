@@ -11,7 +11,7 @@ import org.sbaeker.quarkus.microservices.model.Recipe;
 public class BaristaDAOImpl implements BaristaDAO {
 
     @Inject
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     @Override
     @Transactional

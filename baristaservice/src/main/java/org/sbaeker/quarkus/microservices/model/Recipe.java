@@ -1,10 +1,7 @@
 package org.sbaeker.quarkus.microservices.model;
 
-import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Null;
-
 import java.io.Serializable;
 
 @ApplicationScoped

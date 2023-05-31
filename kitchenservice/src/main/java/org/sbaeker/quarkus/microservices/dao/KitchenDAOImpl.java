@@ -21,7 +21,7 @@ import org.sbaeker.quarkus.microservices.model.Recipe;
 public class KitchenDAOImpl implements KitchenDAO {
 
     @Inject
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     /**
      * Writes an order to the database.

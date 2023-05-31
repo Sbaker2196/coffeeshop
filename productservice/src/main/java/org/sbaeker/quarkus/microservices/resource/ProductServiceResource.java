@@ -10,23 +10,18 @@ package org.sbaeker.quarkus.microservices.resource;
  * This resource is used by the product service.
  */
 
-import io.opentracing.Span;
-import io.opentracing.Tracer;
-import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import org.eclipse.microprofile.opentracing.Traced;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
-import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.annotations.SseElementType;
 import org.reactivestreams.Publisher;
 import org.sbaeker.quarkus.microservices.classification.Classifier;
 
-@Traced
+
 @Path("/product-service")
 public class ProductServiceResource {
 

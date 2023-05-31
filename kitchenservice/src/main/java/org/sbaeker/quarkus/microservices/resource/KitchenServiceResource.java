@@ -32,7 +32,7 @@ import org.sbaeker.quarkus.microservices.model.Recipe;
 public class KitchenServiceResource {
 
     @Inject
-    KitchenDAOImpl kitchenDAO;
+    private KitchenDAOImpl kitchenDAO;
 
     /**
      * Receives an order message, processes it, and sends the corresponding recipe.

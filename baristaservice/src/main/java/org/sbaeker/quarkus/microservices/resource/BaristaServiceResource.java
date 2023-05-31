@@ -9,7 +9,7 @@ package org.sbaeker.quarkus.microservices.resource;
  * It acts as a resource endpoint for the barista service.
  *
  * This class uses reactive messaging annotations to handle the incoming and outgoing messages.
- * It interacts with the kitchen DAO implementation to perform database operations.
+ * It interacts with the barista DAO implementation to perform database operations.
  *
  * The class is application-scoped, meaning that there is only one instance shared across the application.
  *
@@ -17,14 +17,11 @@ package org.sbaeker.quarkus.microservices.resource;
  */
 
 import com.google.gson.Gson;
-import io.opentracing.Span;
-import io.opentracing.Tracer;
 import io.smallrye.reactive.messaging.annotations.Blocking;
 import io.smallrye.reactive.messaging.annotations.Broadcast;
 import io.smallrye.reactive.messaging.annotations.Merge;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.eclipse.microprofile.opentracing.Traced;
 import org.eclipse.microprofile.reactive.messaging.*;
 import org.sbaeker.quarkus.microservices.dao.BaristaDAOImpl;
 import org.sbaeker.quarkus.microservices.model.Order;
@@ -34,19 +31,18 @@ import org.sbaeker.quarkus.microservices.model.Recipe;
 public class BaristaServiceResource {
 
     @Inject
-    BaristaDAOImpl baristaDAO;
+    private BaristaDAOImpl baristaDAO;
 
     /**
      * Receives an order message, processes it, and sends the corresponding recipe.
      *
      * This method is annotated with various reactive messaging annotations to define its behavior.
-     * It converts the incoming message into an Order object, performs database operations using the kitchen DAO,
+     * It converts the incoming message into an Order object, performs database operations using the Barista DAO,
      * and returns the corresponding recipe as a string.
      *
      * @param message the incoming order message
      * @return the recipe as a string
      */
-    @Traced(operationName = "BaristaService - receiveOrder")
     @Incoming("barista-in")
     @Outgoing("recipes")
     @Merge
