@@ -40,7 +40,9 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
  * client for the ProductServiceProxy interface using the corresponding configuration
  * properties.
  *
- * @see <a href="https://download.eclipse.org/microprofile/microprofile-rest-client-1.4.1/apidocs/org/eclipse/microprofile/rest/client/inject/RegisterRestClient.html">MicroProfile Rest Client - @RegisterRestClient</a>
+ * @see <a href="https://download.eclipse.org/microprofile/microprofile-rest-client-1.4.1/apidocs/org/eclipse/microprofile/rest/client/inject/RegisterRestClient.html">
+ *     MicroProfile Rest Client - @RegisterRestClient
+ *     </a>
  */
 @RegisterRestClient(configKey = "productService.proxy")
 @Path("/product-service")

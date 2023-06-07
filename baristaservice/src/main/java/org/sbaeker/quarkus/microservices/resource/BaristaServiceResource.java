@@ -32,7 +32,6 @@ public class BaristaServiceResource {
 
     @Inject
     private BaristaDAOImpl baristaDAO;
-
     /**
      * Receives an order message, processes it, and sends the corresponding recipe.
      *
