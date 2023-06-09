@@ -1,0 +1,3 @@
+org\sbaeker\quarkus\microservices\application\ProductServiceApplication.class
+org\sbaeker\quarkus\microservices\classification\Classifier.class
+org\sbaeker\quarkus\microservices\resource\ProductServiceResource.class

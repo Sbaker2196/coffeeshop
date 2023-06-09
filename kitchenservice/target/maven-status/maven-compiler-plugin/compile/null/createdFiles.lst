@@ -1,0 +1,5 @@
+org\sbaeker\quarkus\microservices\model\Recipe.class
+org\sbaeker\quarkus\microservices\dao\KitchenDAOImpl.class
+org\sbaeker\quarkus\microservices\dao\KitchenDAO.class
+org\sbaeker\quarkus\microservices\resource\KitchenServiceResource.class
+META-INF\panache-archive.marker

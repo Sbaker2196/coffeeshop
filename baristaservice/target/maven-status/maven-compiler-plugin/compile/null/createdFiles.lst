@@ -1,0 +1,6 @@
+org\sbaeker\quarkus\microservices\model\Recipe.class
+org\sbaeker\quarkus\microservices\model\Order.class
+org\sbaeker\quarkus\microservices\resource\BaristaServiceResource.class
+org\sbaeker\quarkus\microservices\dao\BaristaDAO.class
+org\sbaeker\quarkus\microservices\application\BaristaServiceApplication.class
+org\sbaeker\quarkus\microservices\dao\BaristaDAOImpl.class

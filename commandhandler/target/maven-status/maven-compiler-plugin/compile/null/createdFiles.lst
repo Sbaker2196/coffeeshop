@@ -1,0 +1,6 @@
+org\sbaeker\quarkus\microservices\application\OrderServiceApplication.class
+org\sbaeker\quarkus\microservices\dao\OrderDAO.class
+org\sbaeker\quarkus\microservices\dao\OrderDAOImpl.class
+org\sbaeker\quarkus\microservices\model\Order.class
+org\sbaeker\quarkus\microservices\resource\OrderServiceResource.class
+org\sbaeker\quarkus\microservices\proxy\ProductServiceProxy.class
