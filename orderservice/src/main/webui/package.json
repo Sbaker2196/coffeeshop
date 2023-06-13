@@ -9,6 +9,9 @@
   },
   "keywords": [],
   "license": "MIT",
+  "dependencies": {
+    "theaterjs": "3.2.0"
+  },
   "devDependencies": {
     "copy-webpack-plugin": "^10.2.4",
     "webpack": "^5.80.0",

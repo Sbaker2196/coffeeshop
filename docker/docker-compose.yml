@@ -1,0 +1,171 @@
+version: '3.2'
+
+services:
+
+  orderservice:
+    image: sbaeker/order-service:latest
+    ports:
+      - "8080:8080"
+    networks:
+      - coffeeshop
+    depends_on:
+      - orderdb
+      - fluentd
+      - prometheus
+
+  productservice:
+    image: sbaeker/product-service:latest
+    ports:
+      - "8081:8081"
+    networks:
+      - coffeeshop
+    depends_on:
+      - rabbitmq
+      - fluentd
+      - prometheus
+
+  kitchenservice:
+    image: sbaeker/kitchen-service:latest
+    ports:
+      - "8082:8082"
+    networks:
+      - coffeeshop
+    depends_on:
+      - kitchenorderdb
+      - kitchenrecipedb
+      - fluentd
+      - prometheus
+
+  baristaservice:
+    image: sbaeker/barista-service:latest
+    ports:
+      - "8083:8083"
+    networks:
+      - coffeeshop
+    depends_on:
+      - baristaorderdb
+      - baristarecipedb
+      - fluentd
+      - prometheus
+
+  orderdb:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - coffeeshop
+
+  kitchenorderdb:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5433:5432"
+    networks:
+      - coffeeshop
+
+  kitchenrecipedb:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5434:5432"
+    networks:
+      - coffeeshop
+
+  baristaorderdb:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5435:5432"
+    networks:
+      - coffeeshop
+
+  baristarecipedb:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5436:5432"
+    networks:
+      - coffeeshop
+
+  elasticsearch:
+    image: docker.io/elastic/elasticsearch:7.16.3
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      discovery.type: "single-node"
+    networks:
+      - coffeeshop
+
+  fluentd:
+    build:
+      context: ../fluentd
+      dockerfile: Dockerfile
+    ports:
+      - "12201:12201/udp"
+    volumes:
+      - ./fluentd/config/:/fluentd/etc
+    networks:
+      - coffeeshop
+    depends_on:
+      - elasticsearch
+
+  jaeger-all-in-one:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"
+      - "14268:14268"
+      - "4317:4317"
+      - "4318:4318"
+      - "14250:14250"
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    networks:
+      - coffeeshop
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    command: --config.file=/prometheus/config/prometheus.yml
+    networks:
+      - coffeeshop
+
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
+    networks:
+      - coffeeshop
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - coffeeshop
+
+networks:
+  coffeeshop:
+    driver: bridge
