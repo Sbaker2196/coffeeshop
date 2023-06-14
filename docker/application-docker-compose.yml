@@ -1,0 +1,61 @@
+version: '3.2'
+
+services:
+
+  orderservice:
+    image: sbaeker/order-service:latest
+    ports:
+      - "8080:8080"
+    networks:
+      - coffeeshop
+    depends_on:
+      - orderdb
+      - fluentd
+      - prometheus
+
+  productservice:
+    image: sbaeker/product-service:latest
+    ports:
+      - "8081:8081"
+    networks:
+      - coffeeshop
+    depends_on:
+      - rabbitmq
+      - fluentd
+      - prometheus
+
+  kitchenservice:
+    image: sbaeker/kitchen-service:latest
+    ports:
+      - "8082:8082"
+    networks:
+      - coffeeshop
+    depends_on:
+      - kitchenorderdb
+      - kitchenrecipedb
+      - fluentd
+      - prometheus
+
+  baristaservice:
+    image: sbaeker/barista-service:latest
+    ports:
+      - "8083:8083"
+    networks:
+      - coffeeshop
+    depends_on:
+      - baristaorderdb
+      - baristarecipedb
+      - fluentd
+      - prometheus
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - coffeeshop
+
+networks:
+  coffeeshop:
+    driver: bridge

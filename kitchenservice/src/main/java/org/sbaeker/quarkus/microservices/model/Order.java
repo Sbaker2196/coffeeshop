@@ -1,5 +1,6 @@
 package org.sbaeker.quarkus.microservices.model;
 
+import io.quarkus.hibernate.orm.PersistenceUnit;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,6 +13,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import java.io.Serializable;
 
 @ApplicationScoped
+@PersistenceUnit("order")
 @Schema(description = "The Order object")
 @Entity
 @Table(name = "orders")

@@ -1,5 +1,7 @@
 package org.sbaeker.quarkus.microservices.dao;
 
+import io.quarkus.agroal.DataSource;
+import io.quarkus.hibernate.orm.PersistenceUnit;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;

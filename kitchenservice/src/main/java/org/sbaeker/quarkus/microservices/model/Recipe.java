@@ -1,11 +1,15 @@
 package org.sbaeker.quarkus.microservices.model;
 
+import io.quarkus.hibernate.orm.PersistenceUnit;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.*;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.io.Serializable;
 
 @ApplicationScoped
+@PersistenceUnit("recipe")
+@Schema(description = "The Recipe object")
 @Entity
 @Table(name = "recipe")
 public class Recipe implements Serializable {

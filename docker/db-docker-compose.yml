@@ -1,0 +1,62 @@
+version: '3.2'
+
+services:
+
+  orderdb:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - coffeeshop
+
+  kitchenorderdb:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5433:5432"
+    networks:
+      - coffeeshop
+
+  kitchenrecipedb:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5434:5432"
+    networks:
+      - coffeeshop
+
+  baristaorderdb:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5435:5432"
+    networks:
+      - coffeeshop
+
+  baristarecipedb:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5436:5432"
+    networks:
+      - coffeeshop
+
+networks:
+  coffeeshop:
+    driver: bridge

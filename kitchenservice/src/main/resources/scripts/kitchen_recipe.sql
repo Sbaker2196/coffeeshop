@@ -1,3 +1,12 @@
+CREATE TABLE recipe{
+    name VARCHAR(255),
+    gramsWater INTEGER,
+    gramsSugar INTEGER,
+    gramsButter INTEGER,
+    numOfSalamiSlices INTEGER,
+    gramsCreamCheese INTEGER
+}
+
 INSERT INTO recipe(name, gramsWater, gramsSugar, gramsButter, numOfSalamiSlices, gramsCreamCheese)
 VALUES("Croissant", 200, 0, 200, 0, 0);
 
