@@ -1,5 +1,6 @@
 package org.sbaeker.quarkus.microservices.model;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,10 +17,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "orders")
 public class Order implements Serializable {
-
     @Id
-    @GeneratedValue
-    private int orderID;
     @Schema(required = true)
     private String name;
     @Schema(required = true)
@@ -44,13 +42,6 @@ public class Order implements Serializable {
         this.price = price;
     }
 
-    public int getID() {
-        return orderID;
-    }
-
-    public void setID(int orderID) {
-        this.orderID = orderID;
-    }
 
     @Override
     @Produces(MediaType.APPLICATION_JSON)

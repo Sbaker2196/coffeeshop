@@ -52,8 +52,7 @@ public class BaristaServiceResource {
         Order order = gson.fromJson(message, Order.class);
         Recipe recipe;
         System.out.println("Message Received: " + message);
-        baristaDAO.writeOrderToDB(order);
-        recipe = baristaDAO.retrieveReceipeFromDB(order.getName());
+        recipe = baristaDAO.retrieveRecipeFromDB(order.getName());
         System.out.println(recipe.toString());
         return recipe.toString();
     }

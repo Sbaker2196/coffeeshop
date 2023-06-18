@@ -6,6 +6,7 @@ package org.sbaeker.quarkus.microservices.dao;
  * @since 26.05.2023
  */
 
+import io.agroal.api.AgroalDataSource;
 import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
@@ -19,6 +20,10 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import org.sbaeker.quarkus.microservices.model.Order;
 import org.sbaeker.quarkus.microservices.resource.OrderServiceResource;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * Implementation class for the OrderDAO interface.
@@ -45,7 +50,7 @@ public class OrderDAOImpl implements OrderDAO {
     @Override
     @Timed("time-to-write-to-order-db")
     @Transactional
-    public void writeOrderToDd(Order order) {
+    public void writeOrderToDd(Order order) throws SQLException {
         entityManager.persist(order);
     }
 

@@ -13,38 +13,32 @@ package org.sbaeker.quarkus.microservices.dao;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
-import org.sbaeker.quarkus.microservices.model.Order;
+import org.apache.commons.lang3.StringUtils;
+import org.jboss.logging.Logger;
 import org.sbaeker.quarkus.microservices.model.Recipe;
 
 @ApplicationScoped
 public class KitchenDAOImpl implements KitchenDAO {
 
+    private static final Logger LOG = Logger.getLogger(KitchenDAOImpl.class);
+
     @Inject
     private EntityManager entityManager;
 
-    /**
-     * Writes an order to the database.
-     *
-     * @param order the order to be written to the database
-     */
-    @Override
-    @Transactional
-    public void writeOrderToDB(Order order) {
-        entityManager.persist(order);
-    }
-
-    /**
-     * Retrieves a recipe from the database based on the given name.
-     *
-     * @param name the name of the recipe to retrieve
-     * @return the retrieved recipe
-     */
     @Override
     @Transactional
     public Recipe retrieveReceipeFromDB(String name) {
-        return  entityManager.createQuery("SELECT r FROM Recipe r WHERE r.name = :name", Recipe.class)
-                .setParameter("name", name)
-                .getSingleResult();
+        LOG.info("Retrieving recipe from BaristaRecipeDB: " + name);
+        String capName = StringUtils.capitalize(name);
+        try{
+            return  entityManager.createQuery("SELECT r FROM Recipe r WHERE r.name = :name", Recipe.class)
+                    .setParameter("name", capName)
+                    .getSingleResult();
+        } catch (NoResultException e){
+            LOG.warn("Recipe not found in BaristaRecipeDB: " + name);
+            return null;
+        }
     }
 }

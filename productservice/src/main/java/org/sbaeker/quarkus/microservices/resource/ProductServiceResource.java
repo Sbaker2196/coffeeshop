@@ -73,7 +73,7 @@ public class ProductServiceResource {
      */
 
     @GET
-    @Path("/recipes")
+    @Path("recipes")
     @Produces(MediaType.SERVER_SENT_EVENTS)
     @SseElementType("text/plain")
     public Publisher<String> stream() {

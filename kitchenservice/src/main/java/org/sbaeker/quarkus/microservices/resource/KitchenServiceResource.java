@@ -54,8 +54,8 @@ public class KitchenServiceResource {
         Order order = gson.fromJson(message, Order.class);
         Recipe recipe;
         System.out.println("Message Received: " + message);
-        kitchenDAO.writeOrderToDB(order);
         recipe = kitchenDAO.retrieveReceipeFromDB(order.getName());
+        System.out.println(recipe.toString());
         return recipe.toString();
     }
 

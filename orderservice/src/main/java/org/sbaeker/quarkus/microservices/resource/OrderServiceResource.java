@@ -16,6 +16,8 @@ import org.sbaeker.quarkus.microservices.model.Order;
 import org.sbaeker.quarkus.microservices.proxy.ProductServiceProxy;
 import io.micrometer.core.instrument.MeterRegistry;
 
+import java.sql.SQLException;
+
 /**
  * @author Sean Bäker
  * @version 1.0
@@ -53,11 +55,10 @@ public class OrderServiceResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Takes in an order in JSON format from the GUI placed by a customer ")
-    public Response placeOrder(Order order) {
+    public Response placeOrder(Order order) throws SQLException {
         JSONObject order_json = new JSONObject(order);
         order.setName(order_json.getString("name"));
         order.setPrice(order_json.getString("price"));
-        order.setID(order_json.getInt("ID"));
         orderDAO.writeOrderToDd(order);
         System.out.println(order_json);
         productServiceProxy.handleIncomingOrders(String.valueOf(order_json));

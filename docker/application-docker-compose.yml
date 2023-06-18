@@ -1,19 +1,16 @@
 version: '3.2'
 
 services:
-
   orderservice:
+    container_name: orderservice
     image: sbaeker/order-service:latest
     ports:
       - "8080:8080"
     networks:
       - coffeeshop
-    depends_on:
-      - orderdb
-      - fluentd
-      - prometheus
 
   productservice:
+    container_name: productservice
     image: sbaeker/product-service:latest
     ports:
       - "8081:8081"
@@ -21,34 +18,29 @@ services:
       - coffeeshop
     depends_on:
       - rabbitmq
-      - fluentd
-      - prometheus
 
   kitchenservice:
+    container_name: kitchenservice
     image: sbaeker/kitchen-service:latest
     ports:
       - "8082:8082"
     networks:
       - coffeeshop
     depends_on:
-      - kitchenorderdb
-      - kitchenrecipedb
-      - fluentd
-      - prometheus
+      - rabbitmq
 
   baristaservice:
+    container_name: baristaservice
     image: sbaeker/barista-service:latest
     ports:
       - "8083:8083"
     networks:
       - coffeeshop
     depends_on:
-      - baristaorderdb
-      - baristarecipedb
-      - fluentd
-      - prometheus
+      - rabbitmq
 
   rabbitmq:
+    container_name: rabbitmq
     image: rabbitmq:3-management-alpine
     ports:
       - "5672:5672"
