@@ -25,7 +25,7 @@ public class Classifier {
      */
     public String classifyOrder(String message){
         String[] drinks = {"espresso", "americano", "cappuccino", "latte", "latte macchiato"};
-        String[] foods = {"croissant", "bagel", "cheesecake", "sandwich"};
+        String[] foods = {"croissant", "bagel", "cheese cake", "sandwich"};
         JSONObject message_json = new JSONObject(message);
 
         if(Arrays.asList(drinks).contains(message_json.getString("name"))){

@@ -1,7 +1,5 @@
 package org.sbaeker.quarkus.microservices.resource;
 
-import io.micrometer.core.annotation.Timed;
-import io.micrometer.core.instrument.Timer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;

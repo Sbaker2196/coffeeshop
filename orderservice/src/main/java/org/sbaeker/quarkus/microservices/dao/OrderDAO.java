@@ -6,7 +6,6 @@ import java.sql.SQLException;
 
 public interface OrderDAO {
 
-    void writeOrderToDd(Order order) throws SQLException;
-    String getOrders();
+    void writeOrderToDd(Order order);
 
 }
