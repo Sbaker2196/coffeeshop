@@ -17,7 +17,6 @@ import org.eclipse.microprofile.openapi.annotations.info.Info;
  * Application class for the Order Service API.
  * Configures the application's base path and provides OpenAPI documentation.
  */
-
 @OpenAPIDefinition(
         info = @Info(
                 title = "Barista Service API",

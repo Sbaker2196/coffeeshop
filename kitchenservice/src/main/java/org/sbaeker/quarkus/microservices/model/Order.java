@@ -6,6 +6,27 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import java.io.Serializable;
 
+/**
+ * The Order class represents an order in the system.
+ * It encapsulates the name and price of the order.
+ *
+ * <p>Usage example:</p>
+ * <pre>{@code
+ * Order order = new Order();
+ * order.setName("Cappuccino");
+ * order.setPrice("$3.50");
+ * System.out.println(order.toString());
+ * }</pre>
+ *
+ * <p>The Order class is an application-scoped CDI bean and is serializable.</p>
+ *
+ * <p>The toString() method of the Order class is overridden to provide a JSON representation
+ * of the order when using the MediaType.APPLICATION_JSON media type.</p>
+ *
+ * @since 1.0
+ * @author Sean Bäker
+ * @version 1.0.0
+ */
 @ApplicationScoped
 public class Order implements Serializable {
 

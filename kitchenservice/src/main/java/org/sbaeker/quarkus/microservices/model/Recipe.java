@@ -1,11 +1,33 @@
 package org.sbaeker.quarkus.microservices.model;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.*;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
-
 import java.io.Serializable;
 
+/**
+ * The Recipe class represents a recipe in the system.
+ * It encapsulates the ingredients and quantities required to prepare a specific recipe.
+ *
+ * <p>Usage example:</p>
+ * <pre>{@code
+ * Recipe recipe = new Recipe();
+ * recipe.setName("Cappuccino");
+ * recipe.setGramsWater(200);
+ * recipe.setGramsSugar(10);
+ * recipe.setGramsButter(15);
+ * recipe.setNumOfSalamiSlices(4);
+ * recipe.setGramsCreamCheese(50);
+ * System.out.println(recipe.toString());
+ * }</pre>
+ *
+ * <p>The Recipe class is an entity mapped to the "recipe" table in the database.</p>
+ *
+ * <p>The toString() method of the Recipe class provides a string representation of the recipe,
+ * including the name, and the quantities of various ingredients.</p>
+ * @since 1.0
+ * @author Sean Bäker
+ * @version 1.0.0
+ */
 @Entity
 @Table(name = "recipe")
 public class Recipe implements Serializable{

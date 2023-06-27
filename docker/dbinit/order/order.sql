@@ -1,3 +1,4 @@
+--Order Database Creation Script
 CREATE DATABASE defaultorders;
 \c defaultorders;
 

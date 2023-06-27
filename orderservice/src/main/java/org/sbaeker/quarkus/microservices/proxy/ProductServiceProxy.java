@@ -7,42 +7,37 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-/**
- * @author Sean Bäker
- * @version 1.0
- * @since 26.05.2023
- *
- * Interface representing a proxy for the ProductService.
- */
+import io.micrometer.core.annotation.Timed;
 
 /**
- * Indicates that the annotated interface should be registered as a REST client.
- * This annotation is used in conjunction with MicroProfile Rest Client to identify
- * and configure the REST client implementation for the interface.
+ * The ProductServiceProxy interface represents a proxy for the Product Service.
+ * It is used to handle incoming orders and communicate with the Product Service.
  *
- * <p>The {@code configKey} attribute can be used to specify a configuration key
- * that maps to the corresponding configuration properties. This key is used to
- * configure the client implementation at runtime, such as the base URL and any
- * additional properties required for the REST client.
- *
- * <p>Example usage:
- *
+ * <p>Usage example:</p>
  * <pre>{@code
- * RegisterRestClient(configKey = "productService.proxy")
- * public interface ProductServiceProxy {
- *     // ...
- * }
+ * ProductServiceProxy productServiceProxy = RestClientBuilder.newBuilder()
+ *                                 .baseUri(URI.create("http://product-service.com"))
+ *                                 .build(ProductServiceProxy.class);
+ * String response = productServiceProxy.handleIncomingOrders(orderJson);
  * }</pre>
  *
- * <p>In the above example, the {@code ProductServiceProxy} interface is annotated
- * with {@code @RegisterRestClient} and specifies the configuration key as
- * "productService.proxy". This allows configuring the implementation of the REST
- * client for the ProductServiceProxy interface using the corresponding configuration
- * properties.
+ * <p>The ProductServiceProxy interface is annotated with {@code @RegisterRestClient} to indicate that it is a REST client.
+ * The {@code configKey} attribute specifies the configuration key for the RestClientBuilder to retrieve the base URL of the Product Service.</p>
  *
- * @see <a href="https://download.eclipse.org/microprofile/microprofile-rest-client-1.4.1/apidocs/org/eclipse/microprofile/rest/client/inject/RegisterRestClient.html">
- *     MicroProfile Rest Client - @RegisterRestClient
- *     </a>
+ * <p>The ProductServiceProxy interface is also annotated with {@code @Path} to specify the base path for the Product Service API.</p>
+ *
+ * <p>The handleIncomingOrders() method is annotated with {@code @POST} to indicate that it handles HTTP POST requests.
+ * It is annotated with {@code @Produces} and {@code @Consumes} to specify the media type of the request and response payloads.</p>
+ *
+ * @see RegisterRestClient
+ * @see Path
+ * @see POST
+ * @see Produces
+ * @see Consumes
+ * @see MediaType
+ * @since 1.0
+ * @author Sean Bäker
+ * @version 1.0
  */
 @RegisterRestClient(configKey = "productService.proxy")
 @Path("/product-service")
@@ -51,6 +46,7 @@ public interface ProductServiceProxy {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @Timed("order.service.time.to.send.order.to.product.service")
     String handleIncomingOrders(String message);
 
 }
