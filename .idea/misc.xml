@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="Quarkus" url="file://$PROJECT_DIR$/baristaservice" />
+    <file type="Quarkus" url="file://$PROJECT_DIR$/kitchenservice" />
+    <file type="Quarkus" url="file://$PROJECT_DIR$/orderservice" />
+    <file type="Quarkus" url="file://$PROJECT_DIR$/productservice" />
+  </component>
   <component name="JavadocGenerationManager">
     <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/../../Coffeeshop Javadoc" />
   </component>
@@ -16,5 +22,8 @@
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_20" default="true" project-jdk-name="20" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="jpab" />
   </component>
 </project>

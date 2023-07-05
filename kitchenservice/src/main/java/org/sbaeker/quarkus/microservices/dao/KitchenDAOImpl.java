@@ -7,7 +7,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
-import org.gradle.internal.impldep.org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.jboss.logging.Logger;
 import org.sbaeker.quarkus.microservices.model.Recipe;
 
@@ -40,9 +40,10 @@ public class KitchenDAOImpl implements KitchenDAO {
 
   private static final Logger LOG = Logger.getLogger(KitchenDAOImpl.class);
 
-  @Inject private EntityManager entityManager;
+  @Inject
+  EntityManager entityManager;
 
-  private MeterRegistry registry;
+  private final MeterRegistry registry;
 
   KitchenDAOImpl(MeterRegistry registry) {
     this.registry = registry;
@@ -64,15 +65,15 @@ public class KitchenDAOImpl implements KitchenDAO {
   @Transactional
   @Timed("kitchen.service.time.to.retrieve.recipe.from.db")
   public Recipe retrieveReceipeFromDB(String name) {
-    LOG.info("Retrieving recipe from BaristaRecipeDB: " + name);
-    String capName = WordUtils.capitalizeFully(name);
+    LOG.info("Retrieving recipe from KitchenRecipeDB: " + name);
+    String capName = WordUtils.capitalize(name);
     try {
       Recipe recipe =
           entityManager
               .createQuery("SELECT r FROM Recipe r WHERE r.name = :name", Recipe.class)
               .setParameter("name", capName)
               .getSingleResult();
-      LOG.info("Recipe successfully retrieved from BaristaRecipeDB: " + recipe.toString());
+      LOG.info("Recipe successfully retrieved from KitchenRecipeDB: " + recipe.toString());
       return recipe;
     } catch (NoResultException e) {
       registry.counter("kitchen.service.amount.of.failed.db.retrievals");

@@ -1,15 +1,17 @@
 package org.sbaeker.quarkus.microservices.resource;
 
 import com.google.gson.Gson;
+import io.micrometer.core.annotation.Timed;
 import io.smallrye.reactive.messaging.annotations.Blocking;
 import io.smallrye.reactive.messaging.annotations.Broadcast;
 import io.smallrye.reactive.messaging.annotations.Merge;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.eclipse.microprofile.reactive.messaging.*;
 import org.sbaeker.quarkus.microservices.dao.BaristaDAOImpl;
 import org.sbaeker.quarkus.microservices.model.Order;
 import org.sbaeker.quarkus.microservices.model.Recipe;
-import io.micrometer.core.instrument.MeterRegistry;
+
 /**
  * Represents a resource for the Barista service.
  *
@@ -34,7 +36,9 @@ import io.micrometer.core.instrument.MeterRegistry;
  */
 @ApplicationScoped
 public class BaristaServiceResource {
-  private BaristaDAOImpl baristaDAO;
+
+  @Inject
+  BaristaDAOImpl baristaDAO;
 
   /**
    * Receives an order message and retrieves the corresponding recipe from the database.

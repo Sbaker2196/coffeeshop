@@ -1,0 +1,30 @@
+version: '3.2'
+
+services:
+  orderservice:
+    container_name: orderservice
+    image: sbaeker/order-service:latest
+    ports:
+      - "8080:8080"
+    networks:
+      - coffeeshop
+    depends_on:
+      - orderdb
+  orderdb:
+    container_name: orderdb
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./dbinit/order/order.sql:/docker-entrypoint-initdb.d/order.sql
+    networks:
+      - coffeeshop
+networks:
+  coffeeshop:
+    driver: bridge
+volumes:
+  orderdb:

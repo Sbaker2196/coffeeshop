@@ -1,0 +1,30 @@
+version: '3.2'
+
+services:
+  kitchenservice:
+    container_name: kitchenservice
+    image: sbaeker/kitchen-service:latest
+    ports:
+      - "8082:8082"
+    networks:
+      - coffeeshop
+    depends_on:
+      - kitchenrecipedb
+  kitchenrecipedb:
+    container_name: kitchenrecipedb
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - ./dbinit/kitchen/kitchen_recipe.sql:/docker-entrypoint-initdb.d/kitchen_recipe.sql
+    networks:
+      - coffeeshop
+volumes:
+  kitchenrecipedb:
+networks:
+  coffeeshop:
+    driver: bridge

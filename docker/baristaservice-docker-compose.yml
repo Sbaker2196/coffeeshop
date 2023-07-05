@@ -1,0 +1,30 @@
+version: '3.2'
+
+services:
+  baristaservice:
+    container_name: baristaservice
+    image: sbaeker/barista-service:latest
+    ports:
+      - "8083:8083"
+    networks:
+      - coffeeshop
+    depends_on:
+      - baristarecipedb
+  baristarecipedb:
+    container_name: baristarecipedb
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5436:5432"
+    volumes:
+      - ./dbinit/barista/barista_recipe.sql:/docker-entrypoint-initdb.d/barista_recipe.sql
+    networks:
+      - coffeeshop
+volumes:
+  baristarecipedb:
+networks:
+  coffeeshop:
+    driver: bridge

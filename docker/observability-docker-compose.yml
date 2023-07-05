@@ -70,7 +70,6 @@ services:
       - prometheus
     networks:
       - coffeeshop
-
 networks:
   coffeeshop:
     driver: bridge

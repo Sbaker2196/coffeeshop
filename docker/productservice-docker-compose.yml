@@ -1,0 +1,13 @@
+version: '3.2'
+
+services:
+  productservice:
+    container_name: productservice
+    image: sbaeker/product-service:latest
+    ports:
+      - "8081:8081"
+    networks:
+      - coffeeshop
+networks:
+  coffeeshop:
+    driver: bridge

@@ -45,7 +45,7 @@ import io.micrometer.core.annotation.Timed;
 public class KitchenServiceResource {
 
     @Inject
-    private KitchenDAOImpl kitchenDAO;
+    KitchenDAOImpl kitchenDAO;
 
     /**
      * Receives an order message, processes it, and returns the recipe information.

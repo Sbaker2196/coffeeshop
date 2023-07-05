@@ -75,7 +75,8 @@ public class OrderServiceResource {
 
   private static final Logger LOG = Logger.getLogger(OrderServiceResource.class);
 
-  @Inject private OrderDAOImpl orderDAO;
+  @Inject
+  OrderDAOImpl orderDAO;
 
   // Mit der default Registry fließen weniger Informationen an Prometheus
   // amount_of_orders_placed_total{instance="127.0.0.1:8080", job="order-service"}

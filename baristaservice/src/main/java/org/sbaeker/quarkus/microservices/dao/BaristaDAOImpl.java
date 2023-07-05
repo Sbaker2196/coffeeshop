@@ -7,7 +7,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.jboss.logging.Logger;
 import org.sbaeker.quarkus.microservices.model.Recipe;
 
@@ -41,7 +41,8 @@ public class BaristaDAOImpl implements BaristaDAO {
 
   private static final Logger LOG = Logger.getLogger(BaristaDAOImpl.class);
 
-  @Inject private EntityManager entityManager;
+  @Inject
+  EntityManager entityManager;
 
   private final MeterRegistry registry;
 
@@ -66,7 +67,7 @@ public class BaristaDAOImpl implements BaristaDAO {
   @Timed("barista.service.time.to.retrieve.recipe.from.db")
   public Recipe retrieveRecipeFromDB(String name) {
     LOG.info("Retrieving recipe from BaristaRecipeDB: " + name);
-    String capName = StringUtils.capitalize(name);
+    String capName = WordUtils.capitalizeFully(name);
     try {
       Recipe recipe =
           entityManager
