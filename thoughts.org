@@ -16,11 +16,11 @@
 
 
   * KitchenService
-    - [ ] Implement DAO function getAllRecipesFromDB
-    - [ ] Implement REST-API Endpoint for getAllRecipesFromDB
+    - [X] Implement DAO function getAllRecipesFromDB
+    - [X] Implement REST-API Endpoint for getAllRecipesFromDB
 
   
   * BaristaService
-    - [ ] Implement DAO function getAllRecipesFromDB
-    - [ ] Implement REST-API Endpoint for getAllRecipesFromDB
+    - [X] Implement DAO function getAllRecipesFromDB
+    - [X] Implement REST-API Endpoint for getAllRecipesFromDB
 
