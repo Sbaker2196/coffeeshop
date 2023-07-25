@@ -10,7 +10,6 @@ import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jboss.logging.Logger;
 import org.sbaeker.quarkus.microservices.model.Recipe;
-
 /**
  * The KitchenDAOImpl class is responsible for performing database operations related to the kitchen
  * service. It provides methods to write orders to the database and retrieve recipes from the

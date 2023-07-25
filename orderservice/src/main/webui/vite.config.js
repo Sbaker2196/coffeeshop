@@ -1,6 +1,7 @@
 // This config is here because there is already an index in META-INF/resources/index.html
 // If you want this as the index, remove META-INF/resources/
 // Then you can remove this config file and rename quinoa.html to index.html
+
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import express from 'express'

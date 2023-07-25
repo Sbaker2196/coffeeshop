@@ -1,11 +1,17 @@
 package org.sbaeker.quarkus.microservices.dao;
 
+import java.util.List;
 import org.sbaeker.quarkus.microservices.model.Order;
-
-import java.sql.SQLException;
 
 public interface OrderDAO {
 
     void writeOrderToDd(Order order);
+    
+    List<Order> getAllOrdersFromDB();
+
+    String getOrderById(int Id);
+
+    void deleteOrderById(int id);
+
 
 }

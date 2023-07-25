@@ -15,10 +15,13 @@ import org.sbaeker.quarkus.microservices.model.Recipe;
 /**
  * Represents a resource for the Barista service.
  *
- * <p>The BaristaServiceResource class is responsible for receiving orders, retrieving the
- * corresponding recipe from the database, and returning the recipe as a string.
+ * <p>
+ * The BaristaServiceResource class is responsible for receiving orders,
+ * retrieving the corresponding recipe from the database, and returning the
+ * recipe as a string.
  *
- * <p>Usage example:
+ * <p>
+ * Usage example:
  *
  * <pre>{@code
  * BaristaServiceResource baristaService = new BaristaServiceResource();
@@ -27,8 +30,9 @@ import org.sbaeker.quarkus.microservices.model.Recipe;
  * System.out.println("Recipe: " + recipe);
  * }</pre>
  *
- * <p>The BaristaServiceResource class is an application-scoped CDI bean and uses dependency
- * injection to obtain an instance of the BaristaDAOImpl class.
+ * <p>
+ * The BaristaServiceResource class is an application-scoped CDI bean and
+ * uses dependency injection to obtain an instance of the BaristaDAOImpl class.
  *
  * @since 1.0
  * @author Sean Bäker
@@ -37,28 +41,29 @@ import org.sbaeker.quarkus.microservices.model.Recipe;
 @ApplicationScoped
 public class BaristaServiceResource {
 
-  @Inject
-  BaristaDAOImpl baristaDAO;
+    @Inject
+    BaristaDAOImpl baristaDAO;
 
-  /**
-   * Receives an order message and retrieves the corresponding recipe from the database.
-   *
-   * @param message The order message to be processed.
-   * @return The recipe as a string.
-   */
-  @Incoming("barista-in")
-  @Outgoing("recipes")
-  @Merge
-  @Broadcast
-  @Blocking
-  @Timed("barista.service.time.to.receive.order")
-  public String receiveOrder(String message) {
-    Gson gson = new Gson();
-    Order order = gson.fromJson(message, Order.class);
-    Recipe recipe;
-    System.out.println("Message Received: " + message);
-    recipe = baristaDAO.retrieveRecipeFromDB(order.getName());
-    System.out.println(recipe.toString());
-    return recipe.toString();
-  }
+    /**
+     * Receives an order message and retrieves the corresponding recipe from the
+     * database.
+     *
+     * @param message The order message to be processed.
+     * @return The recipe as a string.
+     */
+    @Incoming("barista-in")
+    @Outgoing("recipes")
+    @Merge
+    @Broadcast
+    @Blocking
+    @Timed("barista.service.time.to.receive.order")
+    public String receiveOrder(String message) {
+        Gson gson = new Gson();
+        Order order = gson.fromJson(message, Order.class);
+        Recipe recipe;
+        System.out.println("Message Received: " + message);
+        recipe = baristaDAO.retrieveRecipeFromDB(order.getName());
+        System.out.println(recipe.toString());
+        return recipe.toString();
+    }
 }

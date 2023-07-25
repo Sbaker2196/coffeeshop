@@ -1,5 +1,7 @@
 package org.sbaeker.quarkus.microservices.resource;
 
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -11,8 +13,6 @@ import org.jboss.resteasy.annotations.SseElementType;
 import org.reactivestreams.Publisher;
 import org.sbaeker.quarkus.microservices.classification.Classifier;
 
-import io.micrometer.core.annotation.Timed;
-import io.micrometer.core.instrument.MeterRegistry;
 /**
  * The ProductServiceResource class is a RESTful resource that handles incoming orders and provides
  * a stream of recipes. It receives orders as JSON and forwards them to the appropriate queues based
@@ -69,7 +69,7 @@ public class ProductServiceResource {
   @Inject
   @Channel("recipes")
   Publisher<String> newRecipes;
-  
+
   private final MeterRegistry registry;
 
   ProductServiceResource(MeterRegistry registry) {
@@ -102,7 +102,6 @@ public class ProductServiceResource {
       registry.counter("product.service.amount.of.orders.for.kitchen").increment();
       System.out.println("Order sent to Chef");
     }
-
     LOG.info("ProductServiceResource.class - Method: handleIncomingOrders(String)");
     return message;
   }

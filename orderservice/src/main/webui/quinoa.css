@@ -10,7 +10,7 @@
        background-position: center;
        background-repeat: no-repeat;
        background-size: cover;
-       position: relative;
+    
    }
 
    .logo img{
@@ -42,7 +42,6 @@
 
    .topnav a {
        display: inline-block;
-       float: center;
        color: #f2f2f2;
        text-align: center;
        padding: 30px 50px;
@@ -56,9 +55,9 @@
    }
 
    .button{
-        display:inline-block;
+      display:inline-block;
     	margin:20px;
-        text-decoration:none;
+      text-decoration:none;
     	font-family:Arial;
     	font-size:14px;
     	border:none;
@@ -77,14 +76,20 @@
     background-color: #f0dfd8;
    }
 
+   .tableContainer{
+     padding-bottom: 20px;
+   }
+
    .tableLeft{
        float:left;
-       width:50%;
-       display: inline-block;
+       width: 50%;
+       display: flex;
        vertical-align: top;
+       justify-content: center;
+       height: 100vh;
     }
 
-   .result {
+   .result{
        display: flex;
        justify-content: center;
        align-items: center;
@@ -95,7 +100,9 @@
 
    .tableRight{
        float:right;
-       width:50%;
-       display: inline-block;
+       width: 50%;
+       display: flex;
        vertical-align: top;
+       justify-content: center;
+       height: 100vh;
    }
