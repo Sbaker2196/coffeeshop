@@ -5,7 +5,13 @@ import io.smallrye.reactive.messaging.annotations.Blocking;
 import io.smallrye.reactive.messaging.annotations.Broadcast;
 import io.smallrye.reactive.messaging.annotations.Merge;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import java.util.List;
+import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import org.sbaeker.quarkus.microservices.dao.KitchenDAOImpl;
@@ -42,6 +48,7 @@ import io.micrometer.core.annotation.Timed;
  * @version 1.0.0
  */
 @ApplicationScoped
+@Path("kitchen-service")
 public class KitchenServiceResource {
 
     @Inject
@@ -68,6 +75,13 @@ public class KitchenServiceResource {
         System.out.println(recipe.toString());
         return recipe.toString();
     }
-
+    
+    @GET
+    @Path("get-all-recipes")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Retrieves all recipes from the KitchenRecipeDB in JSON format")
+    public List<Recipe> getAllRecipeFromDB(){
+        return kitchenDAO.getAllRecipesFromDB();
+    }
 
 }

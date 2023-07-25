@@ -1,11 +1,26 @@
   * OrderService
-  
+    - [X] Implement DAO function getAllOrdersFromDB  
+    - [X] Implement DAO function getOrderById
+    - [X] Implement DAO function deleteOrderById
+    - [X] Implement REST-API Endpoint for getAllOrdersFromDB
+    - [X] Implement REST-API Endpoint for getOrderById
+    - [X] Implement REST-API Endpoint for deleteOrderById
+
+    * Function to add to the GUI
+    - [ ] Add funtionality for getAllOrdersFromDB via HTML Button and JS fetch
+    - [ ] Add funtionality for getOrderById via HTML Button and JS fetch
+    - [ ] Add funtionality for deleteOrderById via HTML Button and JS fetch
 
   * ProductService
+    
 
 
   * KitchenService
+    - [ ] Implement DAO function getAllRecipesFromDB
+    - [ ] Implement REST-API Endpoint for getAllRecipesFromDB
 
   
   * BaristaService
+    - [ ] Implement DAO function getAllRecipesFromDB
+    - [ ] Implement REST-API Endpoint for getAllRecipesFromDB
 

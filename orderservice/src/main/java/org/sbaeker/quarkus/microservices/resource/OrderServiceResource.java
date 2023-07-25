@@ -154,8 +154,7 @@ public class OrderServiceResource {
   @Operation(
       summary =
           "Retrieves the order based on the given ID specified in the Path")
-  public String
-  getOrderById(@PathParam("id") int id) {
+  public String getOrderById(@PathParam("id") int id) {
     return orderDAO.getOrderById(id);
   }
 
@@ -164,8 +163,7 @@ public class OrderServiceResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Operation(
       summary = "Deletes an order based on the given ID specified in the Path")
-  public void
-  deleteOrderById(@PathParam("id") int id) {
+  public void deleteOrderById(@PathParam("id") int id) {
     orderDAO.deleteOrderById(id);
   }
 }
