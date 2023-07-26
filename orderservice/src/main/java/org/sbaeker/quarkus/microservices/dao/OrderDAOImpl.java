@@ -136,7 +136,7 @@ public class OrderDAOImpl implements OrderDAO {
     public void deleteOrderById(int id) {
 
         EntityTransaction entityTransaction = null;
-
+        
         try {
             entityTransaction = entityManager.getTransaction();
             entityTransaction.begin();
