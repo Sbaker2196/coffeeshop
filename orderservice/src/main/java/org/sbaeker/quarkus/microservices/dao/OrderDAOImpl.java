@@ -67,86 +67,87 @@ import org.sbaeker.quarkus.microservices.model.Order;
 @ApplicationScoped
 public class OrderDAOImpl implements OrderDAO {
 
-    @Inject
-    EntityManager entityManager;
+  @Inject EntityManager entityManager;
 
-    private static final Logger LOG = Logger.getLogger(OrderDAOImpl.class);
+  private static final Logger LOG = Logger.getLogger(OrderDAOImpl.class);
 
-    // Mit der Annotation hingegen bekommen wir detailliertere Informationen
-    // zur Metrik dazu geliefert wie:
-    // time_to_write_to_order_db_seconds_sum{class="org.sbaeker.quarkus.microservices.dao.OrderDAOImpl",
-    // exception="none",
-    // instance="127.0.0.1:8080", job="order-service",
-    // method="writeOrderToDd"}
+  // Mit der Annotation hingegen bekommen wir detailliertere Informationen
+  // zur Metrik dazu geliefert wie:
+  // time_to_write_to_order_db_seconds_sum{class="org.sbaeker.quarkus.microservices.dao.OrderDAOImpl",
+  // exception="none",
+  // instance="127.0.0.1:8080", job="order-service",
+  // method="writeOrderToDd"}
+    
 
-    /**
-     * Writes an order to the database.
-     *
-     * @param order The order to be written to the database.
-     */
-    @Override
-    @Timed("order.service.time.to.write.to.order.db")
-    @Transactional
-    public void writeOrderToDd(Order order) {
-        entityManager.persist(order);
+  /**
+   * Writes an order to the database.
+   *
+   * @param order The order to be written to the database.
+   */
+  @Override
+  @Timed("order.service.time.to.write.to.order.db")
+  @Transactional
+  public void writeOrderToDd(Order order) {
+    entityManager.persist(order);
+  }
+
+  @Override
+  @Timed("order.service.time.to.retrieve.orders.from.db")
+  @Transactional
+  public List<Order> getAllOrdersFromDB() {
+
+    List<Order> orders = null;
+
+    try {
+      String jpql = "SELECT r FROM Order r";
+      TypedQuery<Order> typedQuery =
+          entityManager.createQuery(jpql, Order.class);
+      orders = typedQuery.getResultList();
+      LOG.info("Orders have been successfully retrived from the OrderDB");
+    } catch (Exception e) {
+      LOG.error("Orders could not be retrived from the DB " + e);
     }
+    return orders;
+  }
 
-    @Override
-    @Timed("order.service.time.to.retrieve.orders.from.db")
-    @Transactional
-    public List<Order> getAllOrdersFromDB() {
+  @Override
+  @Timed("order.service.time.to.get.order.by.id")
+  @Transactional
+  public String getOrderById(int id) {
 
-        List<Order> orders = null;
+    ObjectMapper objectMapper = new ObjectMapper();
 
-        try {
-            String jpql = "SELECT r FROM Order r";
-            TypedQuery<Order> typedQuery = entityManager.createQuery(jpql, Order.class);
-            orders = typedQuery.getResultList();
-            LOG.info("Orders have been successfully retrived from the OrderDB");
-        } catch (Exception e) {
-            LOG.error("Orders could not be retrived from the DB " + e);
-        }
-        return orders;
+    try {
+      Order order = entityManager.find(Order.class, id);
+      if (order == null) {
+        LOG.warn("Order not found with ID {" + id + "}");
+        return ("{\"error\": \"Order not found\"}");
+      }
+      return objectMapper.writeValueAsString(order);
+    } catch (Exception e) {
+      LOG.error("An error occurred while processing the request.\nException: " +
+                e);
+      return "{\"error\": \"An error occurred while processing the request.\"}";
     }
+  }
 
-    @Override
-    @Timed("order.service.time.to.get.order.by.id")
-    @Transactional
-    public String getOrderById(int id) {
+  @Override
+  @Timed("order.service.time.to.delete.order.by.id")
+  @Transactional
+  public void deleteOrderById(int id) {
 
-        ObjectMapper objectMapper = new ObjectMapper();
+    EntityTransaction entityTransaction = null;
 
-        try {
-            Order order = entityManager.find(Order.class, id);
-            if (order == null) {
-                LOG.warn("Order not found with ID {" + id + "}");
-                return ("{\"error\": \"Order not found\"}");
-            }
-            return objectMapper.writeValueAsString(order);
-        } catch (Exception e) {
-            LOG.error("An error occurred while processing the request.\nException: " +
-                    e);
-            return "{\"error\": \"An error occurred while processing the request.\"}";
-        }
+    try {
+      entityTransaction = entityManager.getTransaction();
+      entityTransaction.begin();
+      Order order = entityManager.find(Order.class, id);
+      if (order == null) {
+        LOG.warn("Order not found with ID {" + id + "}");
+      }
+    } catch (Exception e) {
+      LOG.error("An error occurred while processing the request.\nException: " +
+                e);
     }
-
-    @Override
-    @Timed("order.service.time.to.delete.order.by.id")
-    @Transactional
-    public void deleteOrderById(int id) {
-
-        EntityTransaction entityTransaction = null;
-        
-        try {
-            entityTransaction = entityManager.getTransaction();
-            entityTransaction.begin();
-            Order order = entityManager.find(Order.class, id);
-            if (order == null) {
-                LOG.warn("Order not found with ID {" + id + "}");
-            }
-        } catch (Exception e) {
-            LOG.error("An error occurred while processing the request.\nException: " +
-                    e);
-        }
-    }
+  }
 }

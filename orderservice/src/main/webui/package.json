@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "npm": "^9.8.1",
+    "semver": "^7.5.4",
     "theaterjs": "3.2.0"
   },
   "devDependencies": {

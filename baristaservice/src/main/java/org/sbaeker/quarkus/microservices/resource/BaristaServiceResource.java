@@ -1,6 +1,6 @@
 package org.sbaeker.quarkus.microservices.resource;
 
-import com.google.gson.gson;
+import com.google.gson.Gson;
 import io.micrometer.core.annotation.Timed;
 import io.smallrye.reactive.messaging.annotations.Blocking;
 import io.smallrye.reactive.messaging.annotations.Broadcast;
@@ -75,11 +75,11 @@ public class BaristaServiceResource {
 
     @GET
     @Path("get-all-recipes")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Timed("barista.service.time.to.get.all.recipes")
     @Operation(summary = "Retrieves all order from the BaristaRecipeDB in JSON Format")
     public List<Recipe> getAllRecipesFromDB(){
         return baristaDAO.getAllRecipesFromDB();
     }
-
-
 
 }
