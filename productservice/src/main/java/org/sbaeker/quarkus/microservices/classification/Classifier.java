@@ -51,7 +51,7 @@ public class Classifier {
       System.out.println("Drink");
       return "drink";
     }
-
+      
     if (Arrays.asList(foods).contains(message_json.getString("name"))) {
       System.out.println("Food");
       return "food";

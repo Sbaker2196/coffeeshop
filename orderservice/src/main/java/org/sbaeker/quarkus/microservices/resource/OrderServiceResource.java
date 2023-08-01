@@ -3,6 +3,7 @@ package org.sbaeker.quarkus.microservices.resource;
 import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -25,9 +26,8 @@ import org.sbaeker.quarkus.microservices.proxy.ProductServiceProxy;
  * Usage example:
  *
  * <pre>{@code
- * OrderServiceResource orderServiceResource = new
- * OrderServiceResource(registry); Response response =
- * orderServiceResource.placeOrder(order);
+ * OrderServiceResource orderServiceResource = new OrderServiceResource(registry);
+ * Response response = orderServiceResource.placeOrder(order);
  * }</pre>
  *
  * <p>
@@ -95,85 +95,82 @@ import org.sbaeker.quarkus.microservices.proxy.ProductServiceProxy;
 @Path("order-service")
 public class OrderServiceResource {
 
-  private static final Logger LOG =
-      Logger.getLogger(OrderServiceResource.class);
+    private static final Logger LOG = Logger.getLogger(OrderServiceResource.class);
 
-  @Inject private OrderDAOImpl orderDAO;
+    @Inject
+    private OrderDAOImpl orderDAO;
 
-  // Mit der default Registry fließen weniger Informationen an Prometheus
-  // amount_of_orders_placed_total{instance="127.0.0.1:8080",
-  // job="order-service"}
-  private final MeterRegistry registry;
+    // Mit der default Registry fließen weniger Informationen an Prometheus
+    // amount_of_orders_placed_total{instance="127.0.0.1:8080",
+    // job="order-service"}
+    private final MeterRegistry registry;
 
-  /**
-   * Constructs an OrderServiceResource with the specified MeterRegistry.
-   *
-   * @param registry The MeterRegistry used to track metrics.
-   */
-  OrderServiceResource(MeterRegistry registry) { this.registry = registry; }
+    /**
+     * Constructs an OrderServiceResource with the specified MeterRegistry.
+     *
+     * @param registry The MeterRegistry used to track metrics.
+     */
+    OrderServiceResource(MeterRegistry registry) {
+        this.registry = registry;
+    }
 
-  @RestClient private ProductServiceProxy productServiceProxy;
+    @RestClient
+    private ProductServiceProxy productServiceProxy;
 
-  /**
-   * Handles incoming orders and processes them. This method utilizes the
-   * {@link OrderDAOImpl} class
-   * to handle database operations.
-   *
-   * @param order The order to be processed.
-   * @return The response containing the order details.
-   */
-  @POST
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  @Operation(
-      summary =
-          "Takes in an order in JSON format from the GUI placed by a customer ")
-  @Timed("order.service.time.to.place.order")
-  public Response
-  placeOrder(Order order) {
-    JSONObject order_json = new JSONObject(order);
-    order.setName(order_json.getString("name"));
-    order.setPrice(order_json.getString("price"));
-    orderDAO.writeOrderToDd(order);
-    System.out.println(order_json);
-    productServiceProxy.handleIncomingOrders(String.valueOf(order_json));
-    LOG.info("OrderServiceResource.class - Method: placeOrder(String, String)");
-    registry.counter("order.service.amount.of.orders.placed").increment();
-    return Response.ok(201).entity(order.toString()).build();
-  }
+    /**
+     * Handles incoming orders and processes them. This method utilizes the
+     * {@link OrderDAOImpl} class
+     * to handle database operations.
+     *
+     * @param order The order to be processed.
+     * @return The response containing the order details.
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Takes in an order in JSON format from the GUI placed by a customer ")
+    @Timed("order.service.time.to.place.order")
+    public Response placeOrder(Order order) {
+        JSONObject order_json = new JSONObject(order);
+        order.setName(order_json.getString("name"));
+        order.setPrice(order_json.getString("price"));
+        orderDAO.writeOrderToDd(order);
+        System.out.println(order_json);
+        productServiceProxy.handleIncomingOrders(String.valueOf(order_json));
+        LOG.info("OrderServiceResource.class - Method: placeOrder(String, String)");
+        registry.counter("order.service.amount.of.orders.placed").increment();
+        return Response.ok(201).entity(order.toString()).build();
+    }
 
-  /**
-   * Retrieves all placed orders from the Databse and returns them as a JSON
-   * Array. This method utilizies the {@link OrderDAOImpl} class to handle
-   * database operations.
-   *
-   * @return JSON Array of orders
-   */
-  @GET
-  @Path("get-all-orders")
-  @Produces(MediaType.APPLICATION_JSON)
-  @Operation(summary = "Retrieves all orders from the DB in JSON Format")
-  public List<Order> getAllOrdersFromDB() {
-    return orderDAO.getAllOrdersFromDB();
-  }
+    /**
+     * Retrieves all placed orders from the Databse and returns them as a JSON
+     * Array. This method utilizies the {@link OrderDAOImpl} class to handle
+     * database operations.
+     *
+     * @return JSON Array of orders
+     */
+    @GET
+    @Path("get-all-orders")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Retrieves all orders from the DB in JSON Format")
+    public List<Order> getAllOrdersFromDB() {
+        return orderDAO.getAllOrdersFromDB();
+    }
 
-  /**
-   * Gets a group of orders based on the name of the order i.e. "epsresso"
-   * returns all orders that have the name "espresso".
-   * This method utilizies the {@link OrderDAOImpl} class to handle database
-   * operations.
-   *
-   * @param name The name of the order as a String
-   * @return the group of orders as a JSON Array
-   */
-  @GET
-  @Path("get-ordergroup-by-name/{name}")
-  @Produces(MediaType.APPLICATION_JSON)
-  @Operation(
-      summary =
-          "Retrives a group of orders based on the given name in the specified Path")
-  public String
-  getOrdergroupByName(String name) {
-    return orderDAO.getOrdergroupByName(name);
-  }
+    /**
+     * Gets a group of orders based on the name of the order i.e. "epsresso"
+     * returns all orders that have the name "espresso".
+     * This method utilizies the {@link OrderDAOImpl} class to handle database
+     * operations.
+     *
+     * @param name The name of the order as a String
+     * @return the group of orders as a JSON Array
+     */
+    @GET
+    @Path("get-ordergroup-by-name/{name}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Retrives a group of orders based on the given name in the specified Path")
+    public String getOrdergroupByName(String name) {
+        return orderDAO.getOrdergroupByName(name);
+    }
 }

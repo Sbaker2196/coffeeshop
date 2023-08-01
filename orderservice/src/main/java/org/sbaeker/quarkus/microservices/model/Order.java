@@ -15,7 +15,10 @@ import java.io.Serializable;
  * It is an application-scoped CDI bean that models an order in the system.
  * An order object consists of a name and a price.
  *
- * <p>Usage example:</p>
+ * <p>
+ * Usage example:
+ * </p>
+ * 
  * <pre>{@code
  * Order order = new Order();
  * order.setName("Cappuccino");
@@ -23,18 +26,36 @@ import java.io.Serializable;
  * System.out.println(order.toString());
  * }</pre>
  *
- * <p>The Order class is annotated with {@code @Schema} to provide additional information for OpenAPI documentation.
- * The {@code description} attribute specifies the description of the Order object.</p>
+ * <p>
+ * The Order class is annotated with {@code @Schema} to provide additional
+ * information for OpenAPI documentation.
+ * The {@code description} attribute specifies the description of the Order
+ * object.
+ * </p>
  *
- * <p>The Order class is also annotated with {@code @Entity} to indicate that it is a JPA entity.
- * The {@code @Table} annotation specifies the name of the database table associated with the Order entity.</p>
+ * <p>
+ * The Order class is also annotated with {@code @Entity} to indicate that it is
+ * a JPA entity.
+ * The {@code @Table} annotation specifies the name of the database table
+ * associated with the Order entity.
+ * </p>
  *
- * <p>The Order class implements the {@code Serializable} interface to support serialization and deserialization of objects.</p>
+ * <p>
+ * The Order class implements the {@code Serializable} interface to support
+ * serialization and deserialization of objects.
+ * </p>
  *
- * <p>The name and price properties of the Order object are annotated with {@code @Schema} to specify their requirements in the OpenAPI documentation.</p>
+ * <p>
+ * The name and price properties of the Order object are annotated with
+ * {@code @Schema} to specify their requirements in the OpenAPI documentation.
+ * </p>
  *
- * <p>The toString() method is overridden to provide a string representation of the Order object in JSON format.
- * It is annotated with {@code @Produces} to indicate that the method produces a response of type {@code MediaType.APPLICATION_JSON}.</p>
+ * <p>
+ * The toString() method is overridden to provide a string representation of the
+ * Order object in JSON format.
+ * It is annotated with {@code @Produces} to indicate that the method produces a
+ * response of type {@code MediaType.APPLICATION_JSON}.
+ * </p>
  *
  * @see Schema
  * @see Entity
@@ -75,7 +96,7 @@ public class Order implements Serializable {
     public void setPrice(String price) {
         this.price = price;
     }
- 
+
     @Override
     @Produces(MediaType.APPLICATION_JSON)
     public String toString() {

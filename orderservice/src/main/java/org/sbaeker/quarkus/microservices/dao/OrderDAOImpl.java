@@ -66,78 +66,78 @@ import org.sbaeker.quarkus.microservices.model.Order;
 @ApplicationScoped
 public class OrderDAOImpl implements OrderDAO {
 
-  @Inject EntityManager entityManager;
+    @Inject
+    EntityManager entityManager;
 
-  private static final Logger LOG = Logger.getLogger(OrderDAOImpl.class);
+    private static final Logger LOG = Logger.getLogger(OrderDAOImpl.class);
 
-  // Mit der Annotation hingegen bekommen wir detailliertere Informationen
-  // zur Metrik dazu geliefert wie:
-  // time_to_write_to_order_db_seconds_sum{class="org.sbaeker.quarkus.microservices.dao.OrderDAOImpl",
-  // exception="none",
-  // instance="127.0.0.1:8080", job="order-service",
-  // method="writeOrderToDd"}
+    // Mit der Annotation hingegen bekommen wir detailliertere Informationen
+    // zur Metrik dazu geliefert wie:
+    // time_to_write_to_order_db_seconds_sum{class="org.sbaeker.quarkus.microservices.dao.OrderDAOImpl",
+    // exception="none",
+    // instance="127.0.0.1:8080", job="order-service",
+    // method="writeOrderToDd"}
 
-  /**
-   * Writes an order to the database.
-   *
-   * @param order The order to be written to the database.
-   */
-  @Override
-  @Timed("order.service.time.to.write.to.order.db")
-  @Transactional
-  public void writeOrderToDd(Order order) {
-    entityManager.persist(order);
-  }
-
-  /**
-   * Retrieves all orders from the database utilizing Hibernates entityManager
-   *
-   * @return the placed order as a List of results of the {@link EntityManager}
-   */
-  @Override
-  @Timed("order.service.time.to.retrieve.orders.from.db")
-  @Transactional
-  public List<Order> getAllOrdersFromDB() {
-
-    List<Order> orders = null;
-
-    try {
-      String jpql = "SELECT r FROM Order r";
-      TypedQuery<Order> typedQuery =
-          entityManager.createQuery(jpql, Order.class);
-      orders = typedQuery.getResultList();
-      LOG.info("Orders have been successfully retrived from the OrderDB");
-    } catch (Exception e) {
-      LOG.error("Orders could not be retrived from the DB " + e);
+    /**
+     * Writes an order to the database.
+     *
+     * @param order The order to be written to the database.
+     */
+    @Override
+    @Timed("order.service.time.to.write.to.order.db")
+    @Transactional
+    public void writeOrderToDd(Order order) {
+        entityManager.persist(order);
     }
-    return orders;
-  }
 
-  /**
-   * Retrieves a group of orders based on the given name specified in the Path.
-   * Giving "espresso" as the parameter would lead to the retrieval of all
-   * "espresso" orders.
-   *
-   * @param name The name of the order as a String.
-   * @return The list of orders belonging to the given group.
-   */
-  @Override
-  @Timed("order.service.time.to.get.order.by.name")
-  @Transactional
-  public String getOrdergroupByName(String name) {
-    ObjectMapper objectMapper = new ObjectMapper();
+    /**
+     * Retrieves all orders from the database utilizing Hibernates entityManager
+     *
+     * @return the placed order as a List of results of the {@link EntityManager}
+     */
+    @Override
+    @Timed("order.service.time.to.retrieve.orders.from.db")
+    @Transactional
+    public List<Order> getAllOrdersFromDB() {
 
-    try {
-      Order order = entityManager.find(Order.class, name);
-      if (order == null) {
-        LOG.warn("Order not found with Name {" + name + "}");
-        return "{\"error\": \"Order not found\"}";
-      }
-      return objectMapper.writeValueAsString(order);
-    } catch (Exception e) {
-      LOG.error(
-          "An error occurred while processing the request. \n Exception: " + e);
-      return "{\"error\": \"An error occurred while processing the request\"}";
+        List<Order> orders = null;
+
+        try {
+            String jpql = "SELECT r FROM Order r";
+            TypedQuery<Order> typedQuery = entityManager.createQuery(jpql, Order.class);
+            orders = typedQuery.getResultList();
+            LOG.info("Orders have been successfully retrived from the OrderDB");
+        } catch (Exception e) {
+            LOG.error("Orders could not be retrived from the DB " + e);
+        }
+        return orders;
     }
-  }
+
+    /**
+     * Retrieves a group of orders based on the given name specified in the Path.
+     * Giving "espresso" as the parameter would lead to the retrieval of all
+     * "espresso" orders.
+     *
+     * @param name The name of the order as a String.
+     * @return The list of orders belonging to the given group.
+     */
+    @Override
+    @Timed("order.service.time.to.get.order.by.name")
+    @Transactional
+    public String getOrdergroupByName(String name) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        
+        try {
+            Order order = entityManager.find(Order.class, name);
+            if (order == null) {
+                LOG.warn("Order not found with Name {" + name + "}");
+                return "{\"error\": \"Order not found\"}";
+            }
+            return objectMapper.writeValueAsString(order);
+        } catch (Exception e) {
+            LOG.error(
+                    "An error occurred while processing the request. \n Exception: " + e);
+            return "{\"error\": \"An error occurred while processing the request\"}";
+        }
+    }
 }
