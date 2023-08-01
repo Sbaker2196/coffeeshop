@@ -5,7 +5,6 @@ import io.micrometer.core.annotation.Timed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -77,7 +76,6 @@ public class OrderDAOImpl implements OrderDAO {
   // exception="none",
   // instance="127.0.0.1:8080", job="order-service",
   // method="writeOrderToDd"}
-    
 
   /**
    * Writes an order to the database.
@@ -91,6 +89,11 @@ public class OrderDAOImpl implements OrderDAO {
     entityManager.persist(order);
   }
 
+  /**
+   * Retrieves all orders from the database utilizing Hibernates entityManager
+   *
+   * @return the placed order as a List of results of the {@link EntityManager}
+   */
   @Override
   @Timed("order.service.time.to.retrieve.orders.from.db")
   @Transactional
@@ -110,44 +113,31 @@ public class OrderDAOImpl implements OrderDAO {
     return orders;
   }
 
+  /**
+   * Retrieves a group of orders based on the given name specified in the Path.
+   * Giving "espresso" as the parameter would lead to the retrieval of all
+   * "espresso" orders.
+   *
+   * @param name The name of the order as a String.
+   * @return The list of orders belonging to the given group.
+   */
   @Override
-  @Timed("order.service.time.to.get.order.by.id")
+  @Timed("order.service.time.to.get.order.by.name")
   @Transactional
-  public String getOrderById(int id) {
-
+  public String getOrdergroupByName(String name) {
     ObjectMapper objectMapper = new ObjectMapper();
 
     try {
-      Order order = entityManager.find(Order.class, id);
+      Order order = entityManager.find(Order.class, name);
       if (order == null) {
-        LOG.warn("Order not found with ID {" + id + "}");
-        return ("{\"error\": \"Order not found\"}");
+        LOG.warn("Order not found with Name {" + name + "}");
+        return "{\"error\": \"Order not found\"}";
       }
       return objectMapper.writeValueAsString(order);
     } catch (Exception e) {
-      LOG.error("An error occurred while processing the request.\nException: " +
-                e);
-      return "{\"error\": \"An error occurred while processing the request.\"}";
-    }
-  }
-
-  @Override
-  @Timed("order.service.time.to.delete.order.by.id")
-  @Transactional
-  public void deleteOrderById(int id) {
-
-    EntityTransaction entityTransaction = null;
-
-    try {
-      entityTransaction = entityManager.getTransaction();
-      entityTransaction.begin();
-      Order order = entityManager.find(Order.class, id);
-      if (order == null) {
-        LOG.warn("Order not found with ID {" + id + "}");
-      }
-    } catch (Exception e) {
-      LOG.error("An error occurred while processing the request.\nException: " +
-                e);
+      LOG.error(
+          "An error occurred while processing the request. \n Exception: " + e);
+      return "{\"error\": \"An error occurred while processing the request\"}";
     }
   }
 }

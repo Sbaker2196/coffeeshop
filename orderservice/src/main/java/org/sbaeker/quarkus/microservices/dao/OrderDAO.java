@@ -5,13 +5,9 @@ import org.sbaeker.quarkus.microservices.model.Order;
 
 public interface OrderDAO {
 
-    void writeOrderToDd(Order order);
-    
-    List<Order> getAllOrdersFromDB();
+  void writeOrderToDd(Order order);
 
-    String getOrderById(int Id);
+  List<Order> getAllOrdersFromDB();
 
-    void deleteOrderById(int id);
-
-
+  String getOrdergroupByName(String name);
 }

@@ -115,7 +115,9 @@ public class OrderServiceResource {
   @RestClient private ProductServiceProxy productServiceProxy;
 
   /**
-   * Handles incoming orders and processes them.
+   * Handles incoming orders and processes them. This method utilizes the
+   * {@link OrderDAOImpl} class
+   * to handle database operations.
    *
    * @param order The order to be processed.
    * @return The response containing the order details.
@@ -140,6 +142,13 @@ public class OrderServiceResource {
     return Response.ok(201).entity(order.toString()).build();
   }
 
+  /**
+   * Retrieves all placed orders from the Databse and returns them as a JSON
+   * Array. This method utilizies the {@link OrderDAOImpl} class to handle
+   * database operations.
+   *
+   * @return JSON Array of orders
+   */
   @GET
   @Path("get-all-orders")
   @Produces(MediaType.APPLICATION_JSON)
@@ -148,22 +157,23 @@ public class OrderServiceResource {
     return orderDAO.getAllOrdersFromDB();
   }
 
+  /**
+   * Gets a group of orders based on the name of the order i.e. "epsresso"
+   * returns all orders that have the name "espresso".
+   * This method utilizies the {@link OrderDAOImpl} class to handle database
+   * operations.
+   *
+   * @param name The name of the order as a String
+   * @return the group of orders as a JSON Array
+   */
   @GET
-  @Path("get-order-by-id/{id}")
+  @Path("get-ordergroup-by-name/{name}")
   @Produces(MediaType.APPLICATION_JSON)
   @Operation(
       summary =
-          "Retrieves the order based on the given ID specified in the Path")
-  public String getOrderById(@PathParam("id") int id) {
-    return orderDAO.getOrderById(id);
-  }
-
-  @POST
-  @Path("delete-order/{id}")
-  @Produces(MediaType.APPLICATION_JSON)
-  @Operation(
-      summary = "Deletes an order based on the given ID specified in the Path")
-  public void deleteOrderById(@PathParam("id") int id) {
-    orderDAO.deleteOrderById(id);
+          "Retrives a group of orders based on the given name in the specified Path")
+  public String
+  getOrdergroupByName(String name) {
+    return orderDAO.getOrdergroupByName(name);
   }
 }
