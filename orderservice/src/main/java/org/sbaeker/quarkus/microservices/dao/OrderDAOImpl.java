@@ -1,6 +1,5 @@
 package org.sbaeker.quarkus.microservices.dao;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -99,17 +98,11 @@ public class OrderDAOImpl implements OrderDAO {
     @Timed("order.service.time.to.retrieve.orders.from.db")
     @Transactional
     public List<Order> getAllOrdersFromDB() {
-
         List<Order> orders = null;
-
-        try {
-            String jpql = "SELECT r FROM Order r";
-            TypedQuery<Order> typedQuery = entityManager.createQuery(jpql, Order.class);
-            orders = typedQuery.getResultList();
-            LOG.info("Orders have been successfully retrived from the OrderDB");
-        } catch (Exception e) {
-            LOG.error("Orders could not be retrived from the DB " + e);
-        }
+        String jpql = "SELECT r FROM Order r";
+        TypedQuery<Order> typedQuery = entityManager.createQuery(jpql, Order.class);
+        orders = typedQuery.getResultList();
+        LOG.info("Orders retrived successfully");
         return orders;
     }
 
@@ -124,20 +117,13 @@ public class OrderDAOImpl implements OrderDAO {
     @Override
     @Timed("order.service.time.to.get.order.by.name")
     @Transactional
-    public String getOrdergroupByName(String name) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        
-        try {
-            Order order = entityManager.find(Order.class, name);
-            if (order == null) {
-                LOG.warn("Order not found with Name {" + name + "}");
-                return "{\"error\": \"Order not found\"}";
-            }
-            return objectMapper.writeValueAsString(order);
-        } catch (Exception e) {
-            LOG.error(
-                    "An error occurred while processing the request. \n Exception: " + e);
-            return "{\"error\": \"An error occurred while processing the request\"}";
-        }
+    public List<Order> getOrdergroupByName(String name) {
+        List<Order> orders = null;
+        String jpql = "SELECT r FROM Order r WHERE r.name = :name";
+        TypedQuery<Order> typedQuery = entityManager.createQuery(jpql, Order.class);
+        orders = typedQuery.getResultList();
+        LOG.info("Ordergroup retrieved successfully");
+        return orders;
     }
+
 }

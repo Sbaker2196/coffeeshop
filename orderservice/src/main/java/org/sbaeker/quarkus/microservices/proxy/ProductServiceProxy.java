@@ -57,9 +57,10 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 @Path("/product-service")
 public interface ProductServiceProxy {
 
-  @POST
-  @Produces(MediaType.APPLICATION_JSON)
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Timed("order.service.time.to.send.order.to.product.service")
-  String handleIncomingOrders(String message);
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Timed("order.service.time.to.send.order.to.product.service")
+    String handleIncomingOrders(String message);
+
 }

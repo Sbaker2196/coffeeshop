@@ -1,9 +1,9 @@
 package org.sbaeker.quarkus.microservices.resource;
 
+import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -11,7 +11,9 @@ import jakarta.ws.rs.core.Response;
 import java.util.List;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.hibernate.HibernateException;
 import org.jboss.logging.Logger;
+import org.jboss.resteasy.client.exception.ResteasyInternalServerErrorException;
 import org.json.JSONObject;
 import org.sbaeker.quarkus.microservices.dao.OrderDAOImpl;
 import org.sbaeker.quarkus.microservices.model.Order;
@@ -130,16 +132,24 @@ public class OrderServiceResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Takes in an order in JSON format from the GUI placed by a customer ")
     @Timed("order.service.time.to.place.order")
+    @Counted("order.service.amount.of.orders.place.total")
     public Response placeOrder(Order order) {
         JSONObject order_json = new JSONObject(order);
         order.setName(order_json.getString("name"));
         order.setPrice(order_json.getString("price"));
-        orderDAO.writeOrderToDd(order);
-        System.out.println(order_json);
-        productServiceProxy.handleIncomingOrders(String.valueOf(order_json));
-        LOG.info("OrderServiceResource.class - Method: placeOrder(String, String)");
-        registry.counter("order.service.amount.of.orders.placed").increment();
-        return Response.ok(201).entity(order.toString()).build();
+        try {
+            orderDAO.writeOrderToDd(order);
+            System.out.println(order_json);
+            productServiceProxy.handleIncomingOrders(String.valueOf(order_json));
+            LOG.info("OrderServiceResource.class - Method: placeOrder(String, String)");
+        } catch (HibernateException e) {
+            LOG.error("Order could not be stored, HibernateException: " + e.getMessage());
+            return Response.serverError().build();
+        } catch (ResteasyInternalServerErrorException e) {
+            LOG.error("Order could not be forwarded to the Product Service at port 8081\nException: " + e.getMessage());
+            return Response.serverError().build();
+        }
+        return Response.ok(200).entity(order.toString()).build();
     }
 
     /**
@@ -153,8 +163,14 @@ public class OrderServiceResource {
     @Path("get-all-orders")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Retrieves all orders from the DB in JSON Format")
-    public List<Order> getAllOrdersFromDB() {
-        return orderDAO.getAllOrdersFromDB();
+    public Response getAllOrdersFromDB() {
+        try {
+            List<Order> orders = orderDAO.getAllOrdersFromDB();
+            return Response.ok(orders).build();
+        } catch (HibernateException e) {
+            LOG.error("Error retrieving order from DB: " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error retrieving orders").build();
+        }
     }
 
     /**
@@ -170,7 +186,14 @@ public class OrderServiceResource {
     @Path("get-ordergroup-by-name/{name}")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Retrives a group of orders based on the given name in the specified Path")
-    public String getOrdergroupByName(String name) {
-        return orderDAO.getOrdergroupByName(name);
+    public Response getOrdergroupByName(String name) {
+        try {
+            List<Order> orders = orderDAO.getOrdergroupByName(name);
+            return Response.ok(orders).build();
+        } catch (HibernateException e) {
+            LOG.error("Error retrieving ordergroup from DB: " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error retrieving orders").build();
+        }
     }
+
 }

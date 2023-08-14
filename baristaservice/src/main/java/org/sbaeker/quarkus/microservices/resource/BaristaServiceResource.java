@@ -2,21 +2,24 @@ package org.sbaeker.quarkus.microservices.resource;
 
 import com.google.gson.Gson;
 import io.micrometer.core.annotation.Timed;
+import io.quarkus.hibernate.orm.runtime.Hibernate;
 import io.smallrye.reactive.messaging.annotations.Blocking;
 import io.smallrye.reactive.messaging.annotations.Broadcast;
 import io.smallrye.reactive.messaging.annotations.Merge;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import jakarta.inject.*;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-
+import jakarta.ws.rs.core.Response;
+import org.jboss.logging.Logger;
 import java.util.List;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.reactive.messaging.*;
+import org.hibernate.HibernateException;
 import org.sbaeker.quarkus.microservices.dao.BaristaDAOImpl;
 import org.sbaeker.quarkus.microservices.model.Order;
 import org.sbaeker.quarkus.microservices.model.Recipe;
@@ -54,6 +57,8 @@ public class BaristaServiceResource {
     @Inject
     BaristaDAOImpl baristaDAO;
 
+    private static final Logger LOG = Logger.getLogger(BaristaServiceResource.class);
+
     /**
      * Receives an order message and retrieves the corresponding recipe from the
      * database.
@@ -67,14 +72,20 @@ public class BaristaServiceResource {
     @Broadcast
     @Blocking
     @Timed("barista.service.time.to.receive.order")
-    public String receiveOrder(String message) {
+    public Response receiveOrder(String message) {
+
         Gson gson = new Gson();
         Order order = gson.fromJson(message, Order.class);
         Recipe recipe;
-        System.out.println("Message Received: " + message);
-        recipe = baristaDAO.retrieveRecipeFromDB(order.getName());
-        System.out.println(recipe.toString());
-        return recipe.toString();
+        try {
+            recipe = baristaDAO.retrieveRecipeFromDB(order.getName());
+            LOG.info("Recipe retrieved successfully");
+            return Response.ok(recipe).build();
+        } catch (HibernateException e) {
+            LOG.error("Error retrieving recipe from DB: " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error retrieving recipe").build();
+        }
+
     }
 
     @GET
@@ -82,8 +93,16 @@ public class BaristaServiceResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Timed("barista.service.time.to.get.all.recipes")
     @Operation(summary = "Retrieves all order from the BaristaRecipeDB in JSON Format")
-    public List<Recipe> getAllRecipesFromDB(){
-        return baristaDAO.getAllRecipesFromDB();
+    public Response getAllRecipesFromDB() {
+
+        try {
+            List<Recipe> orders = baristaDAO.getAllRecipesFromDB();
+            LOG.info("Recipes retrieved successfully");
+            return Response.ok(orders).build();
+        } catch (HibernateException e) {
+            LOG.error("Error retrieving recipes from DB: " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error retrieving recipes").build();
+        }
     }
 
 }

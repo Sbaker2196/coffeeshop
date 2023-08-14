@@ -9,5 +9,6 @@ public interface OrderDAO {
 
     List<Order> getAllOrdersFromDB();
 
-    String getOrdergroupByName(String name);
+    List<Order> getOrdergroupByName(String name);
+
 }
