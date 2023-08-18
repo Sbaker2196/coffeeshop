@@ -9,7 +9,6 @@ import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import org.apache.commons.lang3.text.WordUtils;
-import org.hibernate.HibernateException;
 import org.jboss.logging.Logger;
 import org.sbaeker.quarkus.microservices.model.Recipe;
 
@@ -52,7 +51,7 @@ public class BaristaDAOImpl implements BaristaDAO {
     EntityManager entityManager;
 
     private final MeterRegistry registry;
-
+    
     BaristaDAOImpl(MeterRegistry registry) {
         this.registry = registry;
     }

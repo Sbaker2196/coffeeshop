@@ -7,8 +7,8 @@ import jakarta.persistence.Table;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
-
 import java.io.Serializable;
+
 
 /**
  * The Order class represents an order object.
