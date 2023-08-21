@@ -1,13 +1,15 @@
 package org.sbaeker.quarkus.microservices.model;
 
+import java.io.Serializable;
+
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-import java.io.Serializable;
 
 
 /**

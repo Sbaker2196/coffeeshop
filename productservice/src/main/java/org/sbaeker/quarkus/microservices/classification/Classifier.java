@@ -1,8 +1,10 @@
 package org.sbaeker.quarkus.microservices.classification;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import java.util.Arrays;
+
 import org.json.JSONObject;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * The Classifier class is responsible for classifying orders based on their names. It provides a

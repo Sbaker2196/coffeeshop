@@ -1,5 +1,11 @@
 package org.sbaeker.quarkus.microservices.dao;
 
+import java.util.List;
+
+import org.apache.commons.lang3.text.WordUtils;
+import org.jboss.logging.Logger;
+import org.sbaeker.quarkus.microservices.model.Recipe;
+
 import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -8,10 +14,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
-import java.util.List;
-import org.apache.commons.lang3.text.WordUtils;
-import org.jboss.logging.Logger;
-import org.sbaeker.quarkus.microservices.model.Recipe;
 
 /**
  * The KitchenDAOImpl class is responsible for performing database operations

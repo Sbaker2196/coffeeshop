@@ -1,28 +1,29 @@
 package org.sbaeker.quarkus.microservices.resource;
 
+import java.util.List;
+
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.reactive.messaging.Incoming;
+import org.eclipse.microprofile.reactive.messaging.Outgoing;
+import org.hibernate.HibernateException;
+import org.jboss.logging.Logger;
+import org.sbaeker.quarkus.microservices.dao.BaristaDAOImpl;
+import org.sbaeker.quarkus.microservices.model.Order;
+import org.sbaeker.quarkus.microservices.model.Recipe;
+
 import com.google.gson.Gson;
+
 import io.micrometer.core.annotation.Timed;
-import io.quarkus.hibernate.orm.runtime.Hibernate;
 import io.smallrye.reactive.messaging.annotations.Blocking;
 import io.smallrye.reactive.messaging.annotations.Broadcast;
 import io.smallrye.reactive.messaging.annotations.Merge;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.inject.*;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.jboss.logging.Logger;
-import java.util.List;
-
-import org.eclipse.microprofile.openapi.annotations.Operation;
-import org.eclipse.microprofile.reactive.messaging.*;
-import org.hibernate.HibernateException;
-import org.sbaeker.quarkus.microservices.dao.BaristaDAOImpl;
-import org.sbaeker.quarkus.microservices.model.Order;
-import org.sbaeker.quarkus.microservices.model.Recipe;
 
 /**
  * Represents a resource for the Barista service.

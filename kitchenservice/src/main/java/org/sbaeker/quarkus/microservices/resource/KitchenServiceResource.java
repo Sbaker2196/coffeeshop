@@ -1,23 +1,26 @@
 package org.sbaeker.quarkus.microservices.resource;
 
-import com.google.gson.Gson;
-import io.smallrye.reactive.messaging.annotations.Blocking;
-import io.smallrye.reactive.messaging.annotations.Broadcast;
-import io.smallrye.reactive.messaging.annotations.Merge;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
 import java.util.List;
+
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import org.sbaeker.quarkus.microservices.dao.KitchenDAOImpl;
 import org.sbaeker.quarkus.microservices.model.Order;
 import org.sbaeker.quarkus.microservices.model.Recipe;
+
+import com.google.gson.Gson;
+
 import io.micrometer.core.annotation.Timed;
+import io.smallrye.reactive.messaging.annotations.Blocking;
+import io.smallrye.reactive.messaging.annotations.Broadcast;
+import io.smallrye.reactive.messaging.annotations.Merge;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 
 
 /**

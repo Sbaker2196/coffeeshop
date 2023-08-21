@@ -1,10 +1,11 @@
 package org.sbaeker.quarkus.microservices.model;
 
 
+import java.io.Serializable;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-import java.io.Serializable;
 
 /**
  * The Order class represents an order in the system.

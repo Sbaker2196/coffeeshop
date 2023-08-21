@@ -1,8 +1,12 @@
 package org.sbaeker.quarkus.microservices.model;
 
-import jakarta.persistence.*;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import java.io.Serializable;
+
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 /**
  * The Recipe class represents a recipe in the system.

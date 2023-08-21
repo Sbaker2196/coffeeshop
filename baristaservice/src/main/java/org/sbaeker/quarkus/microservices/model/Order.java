@@ -1,9 +1,10 @@
 package org.sbaeker.quarkus.microservices.model;
 
+import java.io.Serializable;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-import java.io.Serializable;
 
 /**
  * Represents an order in the coffee shop.

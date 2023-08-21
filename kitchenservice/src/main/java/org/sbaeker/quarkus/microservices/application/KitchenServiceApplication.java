@@ -1,5 +1,9 @@
 package org.sbaeker.quarkus.microservices.application;
 
+import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
+import org.eclipse.microprofile.openapi.annotations.info.Contact;
+import org.eclipse.microprofile.openapi.annotations.info.Info;
+
 /**
  * @author Sean Bäker
  * @version 1.0
@@ -9,9 +13,6 @@ package org.sbaeker.quarkus.microservices.application;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
-import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
-import org.eclipse.microprofile.openapi.annotations.info.Contact;
-import org.eclipse.microprofile.openapi.annotations.info.Info;
 
 /**
  * Application class for the Kitchen Service API

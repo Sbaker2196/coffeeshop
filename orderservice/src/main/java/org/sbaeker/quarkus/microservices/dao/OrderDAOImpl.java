@@ -1,14 +1,18 @@
 package org.sbaeker.quarkus.microservices.dao;
 
+import java.util.List;
+
+import org.hibernate.HibernateException;
+import org.jboss.logging.Logger;
+import org.sbaeker.quarkus.microservices.model.Order;
+
 import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
-import java.util.List;
-import org.jboss.logging.Logger;
-import org.sbaeker.quarkus.microservices.model.Order;
 
 /**
  * The OrderDAOImpl class is responsible for performing database operations
@@ -65,65 +69,86 @@ import org.sbaeker.quarkus.microservices.model.Order;
 @ApplicationScoped
 public class OrderDAOImpl implements OrderDAO {
 
-    @Inject
-    EntityManager entityManager;
+  @Inject
+  EntityManager entityManager;
 
-    private static final Logger LOG = Logger.getLogger(OrderDAOImpl.class);
+  private static final Logger LOG = Logger.getLogger(OrderDAOImpl.class);
 
-    // Mit der Annotation hingegen bekommen wir detailliertere Informationen
-    // zur Metrik dazu geliefert wie:
-    // time_to_write_to_order_db_seconds_sum{class="org.sbaeker.quarkus.microservices.dao.OrderDAOImpl",
-    // exception="none",
-    // instance="127.0.0.1:8080", job="order-service",
-    // method="writeOrderToDd"}
+  private final MeterRegistry registry;
 
-    /**
-     * Writes an order to the database.
-     *
-     * @param order The order to be written to the database.
-     */
-    @Override
-    @Timed("order.service.time.to.write.to.order.db")
-    @Transactional
-    public void writeOrderToDd(Order order) {
-        entityManager.persist(order);
+  OrderDAOImpl(MeterRegistry registry) {
+    this.registry = registry;
+  }
+
+  // Mit der Annotation hingegen bekommen wir detailliertere Informationen
+  // zur Metrik dazu geliefert wie:
+  // time_to_write_to_order_db_seconds_sum{class="org.sbaeker.quarkus.microservices.dao.OrderDAOImpl",
+  // exception="none",
+  // instance="127.0.0.1:8080", job="order-service",
+  // method="writeOrderToDd"}
+
+  /**
+   * Writes an order to the database.
+   *
+   * @param order The order to be written to the database.
+   */
+  @Override
+  @Timed("order.service.time.to.write.to.order.db")
+  @Transactional
+  public void writeOrderToDd(Order order) {
+    try {
+      entityManager.persist(order);
+    } catch (HibernateException e) {
+      LOG.error("Error writing order to DB: " + e);
     }
 
-    /**
-     * Retrieves all orders from the database utilizing Hibernates entityManager
-     *
-     * @return the placed order as a List of results of the {@link EntityManager}
-     */
-    @Override
-    @Timed("order.service.time.to.retrieve.orders.from.db")
-    @Transactional
-    public List<Order> getAllOrdersFromDB() {
-        List<Order> orders = null;
-        String jpql = "SELECT r FROM Order r";
-        TypedQuery<Order> typedQuery = entityManager.createQuery(jpql, Order.class);
-        orders = typedQuery.getResultList();
-        LOG.info("Orders retrived successfully");
-        return orders;
-    }
+  }
 
-    /**
-     * Retrieves a group of orders based on the given name specified in the Path.
-     * Giving "espresso" as the parameter would lead to the retrieval of all
-     * "espresso" orders.
-     *
-     * @param name The name of the order as a String.
-     * @return The list of orders belonging to the given group.
-     */
-    @Override
-    @Timed("order.service.time.to.get.order.by.name")
-    @Transactional
-    public List<Order> getOrdergroupByName(String name) {
-        List<Order> orders = null;
-        String jpql = "SELECT r FROM Order r WHERE r.name = :name";
-        TypedQuery<Order> typedQuery = entityManager.createQuery(jpql, Order.class);
-        orders = typedQuery.getResultList();
-        LOG.info("Ordergroup retrieved successfully");
-        return orders;
+  /**
+   * Retrieves all orders from the database utilizing Hibernates entityManager
+   *
+   * @return the placed order as a List of results of the {@link EntityManager}
+   */
+  @Override
+  @Timed("order.service.time.to.retrieve.orders.from.db")
+  @Transactional
+  public List<Order> getAllOrdersFromDB() {
+    List<Order> orders = null;
+    try {
+      String jpql = "SELECT r FROM Order r";
+      TypedQuery<Order> typedQuery = entityManager.createQuery(jpql, Order.class);
+      orders = typedQuery.getResultList();
+      LOG.info("Orders retrived successfully");
+    } catch (Exception e) {
+      registry.counter("order.service.amount.failed.order.retrievals.from.db");
+      LOG.error("Error getting all orders from the DB: " + e);
     }
+    return orders;
+  }
+
+  /**
+   * Retrieves a group of orders based on the given name specified in the Path.
+   * Giving "espresso" as the parameter would lead to the retrieval of all
+   * "espresso" orders.
+   *
+   * @param name The name of the order as a String.
+   * @return The list of orders belonging to the given group.
+   */
+  @Override
+  @Timed("order.service.time.to.get.order.by.name")
+  @Transactional
+  public List<Order> getOrdergroupByName(String name) {
+    List<Order> orders = null;
+    try {
+      String jpql = "SELECT r FROM Order r WHERE r.name = :name";
+      TypedQuery<Order> typedQuery = entityManager.createQuery(jpql, Order.class);
+      orders = typedQuery.getResultList();
+      LOG.info("Ordergroup retrieved successfully");
+    } catch (Exception e) {
+      registry.counter("order.service.amount.of.failed.gets.of.ordergroup.from.db");
+      LOG.error("Ordergroup could not be retrieved from the DB: " + e);
+    }
+    return orders;
+  }
 
 }
