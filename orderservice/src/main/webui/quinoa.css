@@ -55,7 +55,7 @@
      background-color: #c67e5e;
      color: white;
    }
-
+    
    .button {
      display: inline-block;
      margin: 20px;
@@ -98,6 +98,7 @@
      height: 100vh;
      position: relative;
      z-index: 1;
+     margin-bottom: 0px;
    }
 
    .tableRight {
@@ -107,4 +108,4 @@
      vertical-align: top;
      justify-content: center;
      height: 100vh;
-   }
+   } 

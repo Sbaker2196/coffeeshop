@@ -99,7 +99,7 @@ public class OrderDAOImpl implements OrderDAO {
     try {
       entityManager.persist(order);
     } catch (HibernateException e) {
-      LOG.error("Error writing order to DB: " + e);
+      LOG.error("Error writing order to DB: " + e.getMessage());
     }
 
   }
@@ -119,9 +119,9 @@ public class OrderDAOImpl implements OrderDAO {
       TypedQuery<Order> typedQuery = entityManager.createQuery(jpql, Order.class);
       orders = typedQuery.getResultList();
       LOG.info("Orders retrived successfully");
-    } catch (Exception e) {
+    } catch (HibernateException e) {
       registry.counter("order.service.amount.failed.order.retrievals.from.db");
-      LOG.error("Error getting all orders from the DB: " + e);
+      LOG.error("Error getting all orders from the DB: " + e.getMessage());
     }
     return orders;
   }
@@ -142,11 +142,12 @@ public class OrderDAOImpl implements OrderDAO {
     try {
       String jpql = "SELECT r FROM Order r WHERE r.name = :name";
       TypedQuery<Order> typedQuery = entityManager.createQuery(jpql, Order.class);
+      typedQuery.setParameter("name", name);
       orders = typedQuery.getResultList();
       LOG.info("Ordergroup retrieved successfully");
-    } catch (Exception e) {
+    } catch (HibernateException e) {
       registry.counter("order.service.amount.of.failed.gets.of.ordergroup.from.db");
-      LOG.error("Ordergroup could not be retrieved from the DB: " + e);
+      LOG.error("Ordergroup could not be retrieved from the DB: " + e.getMessage());
     }
     return orders;
   }

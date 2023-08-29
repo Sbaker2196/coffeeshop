@@ -3,6 +3,7 @@ package org.sbaeker.quarkus.microservices.dao;
 import java.util.List;
 
 import org.apache.commons.lang3.text.WordUtils;
+import org.hibernate.HibernateException;
 import org.jboss.logging.Logger;
 import org.sbaeker.quarkus.microservices.model.Recipe;
 
@@ -30,9 +31,9 @@ import jakarta.transaction.Transactional;
  * KitchenDAOImpl kitchenDAO = new KitchenDAOImpl();
  * Recipe recipe = kitchenDAO.retrieveRecipeFromDB("Cappuccino");
  * if (recipe != null) {
- *     System.out.println("Recipe found: " + recipe.toString());
+ *   System.out.println("Recipe found: " + recipe.toString());
  * } else {
- *     System.out.println("Recipe not found");
+ *   System.out.println("Recipe not found");
  * }
  * }</pre>
  *
@@ -50,11 +51,14 @@ public class KitchenDAOImpl implements KitchenDAO {
 
   private static final Logger LOG = Logger.getLogger(KitchenDAOImpl.class);
 
-  @Inject EntityManager entityManager;
+  @Inject
+  EntityManager entityManager;
 
   private final MeterRegistry registry;
 
-  KitchenDAOImpl(MeterRegistry registry) { this.registry = registry; }
+  KitchenDAOImpl(MeterRegistry registry) {
+    this.registry = registry;
+  }
 
   /**
    * Retrieves a recipe from the KitchenRecipeDB based on the specified name.
@@ -83,18 +87,20 @@ public class KitchenDAOImpl implements KitchenDAO {
     LOG.info("Retrieving recipe from KitchenRecipeDB: " + name);
     String capName = WordUtils.capitalize(name);
     try {
-      Recipe recipe =
-          entityManager
-              .createQuery("SELECT r FROM Recipe r WHERE r.name = :name",
-                           Recipe.class)
-              .setParameter("name", capName)
-              .getSingleResult();
+      Recipe recipe = entityManager
+          .createQuery("SELECT r FROM Recipe r WHERE r.name = :name",
+              Recipe.class)
+          .setParameter("name", capName)
+          .getSingleResult();
       LOG.info("Recipe successfully retrieved from KitchenRecipeDB: " +
-               recipe.toString());
+          recipe.toString());
       return recipe;
     } catch (NoResultException e) {
       registry.counter("kitchen.service.amount.of.failed.db.retrievals");
       LOG.warn("Recipe not found in BaristaRecipeDB: " + name);
+      return null;
+    } catch (HibernateException e) {
+      LOG.error("Orders could not be retrieved from teh DB: " + e.getMessage());
       return null;
     }
   }
@@ -103,13 +109,12 @@ public class KitchenDAOImpl implements KitchenDAO {
     List<Recipe> recipes = null;
     try {
       String jpql = "SELECT r FROM Recipe r";
-      TypedQuery<Recipe> typedQuery =
-          entityManager.createQuery(jpql, Recipe.class);
+      TypedQuery<Recipe> typedQuery = entityManager.createQuery(jpql, Recipe.class);
       recipes = typedQuery.getResultList();
       LOG.info(
-          "Recipes have been successfully retrieved from the KitchenRecipeDB");
-    } catch (Exception e) {
-      LOG.error("Orders could not be retrieved from the DB " + e);
+       "Recipes have been successfully retrieved from the KitchenRecipeDB");
+    } catch (HibernateException e) {
+      LOG.error("Orders could not be retrieved from the DB: " + e.getMessage());
     }
     return recipes;
   }

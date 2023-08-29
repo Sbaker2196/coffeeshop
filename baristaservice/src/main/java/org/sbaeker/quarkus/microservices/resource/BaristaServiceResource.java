@@ -55,55 +55,42 @@ import jakarta.ws.rs.core.Response;
 @Path("barista-service")
 public class BaristaServiceResource {
 
-    @Inject
-    BaristaDAOImpl baristaDAO;
+  @Inject
+  BaristaDAOImpl baristaDAO;
 
-    private static final Logger LOG = Logger.getLogger(BaristaServiceResource.class);
+  private static final Logger LOG = Logger.getLogger(BaristaServiceResource.class);
 
-    /**
-     * Receives an order message and retrieves the corresponding recipe from the
-     * database.
-     *
-     * @param message The order message to be processed.
-     * @return The recipe as a string.
-     */
-    @Incoming("barista-in")
-    @Outgoing("recipes")
-    @Merge
-    @Broadcast
-    @Blocking
-    @Timed("barista.service.time.to.receive.order")
-    public Response receiveOrder(String message) {
+  /**
+   * Receives an order message and retrieves the corresponding recipe from the
+   * database.
+   *
+   * @param message The order message to be processed.
+   * @return The recipe as a string.
+   */
+  @Incoming("barista-in")
+  @Outgoing("recipes")
+  @Merge
+  @Broadcast
+  @Blocking
+  @Timed("barista.service.time.to.receive.order")
+  public Response receiveOrder(String message) {
+    Gson gson = new Gson();
+    Order order = gson.fromJson(message, Order.class);
+    Recipe recipe;
+    recipe = baristaDAO.retrieveRecipeFromDB(order.getName());
+    LOG.info("Recipe retrieved successfully");
+    return Response.ok(recipe).build();
+  }
 
-        Gson gson = new Gson();
-        Order order = gson.fromJson(message, Order.class);
-        Recipe recipe;
-        try {
-            recipe = baristaDAO.retrieveRecipeFromDB(order.getName());
-            LOG.info("Recipe retrieved successfully");
-            return Response.ok(recipe).build();
-        } catch (HibernateException e) {
-            LOG.error("Error retrieving recipe from DB: " + e.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error retrieving recipe").build();
-        }
-
-    }
-
-    @GET
-    @Path("get-all-recipes")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Timed("barista.service.time.to.get.all.recipes")
-    @Operation(summary = "Retrieves all order from the BaristaRecipeDB in JSON Format")
-    public Response getAllRecipesFromDB() {
-
-        try {
-            List<Recipe> orders = baristaDAO.getAllRecipesFromDB();
-            LOG.info("Recipes retrieved successfully");
-            return Response.ok(orders).build();
-        } catch (HibernateException e) {
-            LOG.error("Error retrieving recipes from DB: " + e.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error retrieving recipes").build();
-        }
-    }
+  @GET
+  @Path("get-all-recipes")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Timed("barista.service.time.to.get.all.recipes")
+  @Operation(summary = "Retrieves all order from the BaristaRecipeDB in JSON Format")
+  public Response getAllRecipesFromDB() {
+    List<Recipe> orders = baristaDAO.getAllRecipesFromDB();
+    LOG.info("Recipes retrieved successfully");
+    return Response.ok(orders).build();
+  }
 
 }
