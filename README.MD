@@ -270,7 +270,8 @@ sysctl -w vm.max_map_count=262144
 
 #To make permanent changes do the following
 wsl -d docker-desktop
-grep vm.max_map_count /etc/sysctl.conf
+vi /etc/sysctl.conf
+//insert the following line here
 vm.max_map_count=262144
 
 # for MacOS or Linux based Systems do this for temporary changes
