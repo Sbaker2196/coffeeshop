@@ -17,8 +17,8 @@ import jakarta.transaction.Transactional;
 /**
  * The OrderDAOImpl class is responsible for performing database operations
  * related to orders. It
- * provides methods to write orders to the database. This DAO implementation is
- * specifically
+ * provides methods to write orders to the database. 
+ * This DAO implementation is specifically
  * designed for handling orders.
  *
  * <p>

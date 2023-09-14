@@ -5,7 +5,6 @@ import java.util.List;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
-import org.hibernate.HibernateException;
 import org.jboss.logging.Logger;
 import org.sbaeker.quarkus.microservices.dao.BaristaDAOImpl;
 import org.sbaeker.quarkus.microservices.model.Order;
@@ -55,42 +54,42 @@ import jakarta.ws.rs.core.Response;
 @Path("barista-service")
 public class BaristaServiceResource {
 
-  @Inject
-  BaristaDAOImpl baristaDAO;
+    @Inject
+    BaristaDAOImpl baristaDAO;
 
-  private static final Logger LOG = Logger.getLogger(BaristaServiceResource.class);
+    private static final Logger LOG = Logger.getLogger(BaristaServiceResource.class);
 
-  /**
-   * Receives an order message and retrieves the corresponding recipe from the
-   * database.
-   *
-   * @param message The order message to be processed.
-   * @return The recipe as a string.
-   */
-  @Incoming("barista-in")
-  @Outgoing("recipes")
-  @Merge
-  @Broadcast
-  @Blocking
-  @Timed("barista.service.time.to.receive.order")
-  public Response receiveOrder(String message) {
-    Gson gson = new Gson();
-    Order order = gson.fromJson(message, Order.class);
-    Recipe recipe;
-    recipe = baristaDAO.retrieveRecipeFromDB(order.getName());
-    LOG.info("Recipe retrieved successfully");
-    return Response.ok(recipe).build();
-  }
+    /**
+     * Receives an order message and retrieves the corresponding recipe from the
+     * database.
+     *
+     * @param message The order message to be processed.
+     * @return The recipe as a string.
+     */
+    @Incoming("barista-in")
+    @Outgoing("recipes")
+    @Merge
+    @Broadcast
+    @Blocking
+    @Timed("barista.service.time.to.receive.order")
+    public Response receiveOrder(String message) {
+        Gson gson = new Gson();
+        Order order = gson.fromJson(message, Order.class);
+        Recipe recipe;
+        recipe = baristaDAO.retrieveRecipeFromDB(order.getName());
+        LOG.info("Recipe retrieved successfully");
+        return Response.ok(recipe).build();
+    }
 
-  @GET
-  @Path("get-all-recipes")
-  @Produces(MediaType.APPLICATION_JSON)
-  @Timed("barista.service.time.to.get.all.recipes")
-  @Operation(summary = "Retrieves all order from the BaristaRecipeDB in JSON Format")
-  public Response getAllRecipesFromDB() {
-    List<Recipe> orders = baristaDAO.getAllRecipesFromDB();
-    LOG.info("Recipes retrieved successfully");
-    return Response.ok(orders).build();
-  }
-
+    @GET
+    @Path("get-all-recipes")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Timed("barista.service.time.to.get.all.recipes")
+    @Operation(summary = "Retrieves all order from the BaristaRecipeDB in JSON Format")
+    public Response getAllRecipesFromDB() {
+        List<Recipe> orders = baristaDAO.getAllRecipesFromDB();
+        LOG.info("Recipes retrieved successfully");
+        return Response.ok(orders).build();
+    }
+    
 }

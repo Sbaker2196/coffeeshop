@@ -8,9 +8,9 @@ const drinkItems = [
 ];
 
 //building order item by traversing the drinkItems collection
-drinkItems.forEach(item => {
-  const button = document.getElementById(item.id);
-  button.addEventListener("click", () => buyItem(item))
+  drinkItems.forEach(item => {
+    const button = document.getElementById(item.id);
+    button.addEventListener("click", () => buyItem(item))
 })
 
 //food items 
@@ -27,7 +27,6 @@ foodItems.forEach(item => {
   button.addEventListener("click", () => buyItem(item));
 })
 
-//
 function buyItem(item){
   let order = {
     name: item.name,

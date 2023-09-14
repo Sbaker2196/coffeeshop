@@ -31,9 +31,9 @@ import jakarta.transaction.Transactional;
  * KitchenDAOImpl kitchenDAO = new KitchenDAOImpl();
  * Recipe recipe = kitchenDAO.retrieveRecipeFromDB("Cappuccino");
  * if (recipe != null) {
- *   System.out.println("Recipe found: " + recipe.toString());
+ *     System.out.println("Recipe found: " + recipe.toString());
  * } else {
- *   System.out.println("Recipe not found");
+ *     System.out.println("Recipe not found");
  * }
  * }</pre>
  *
@@ -49,73 +49,72 @@ import jakarta.transaction.Transactional;
 @ApplicationScoped
 public class KitchenDAOImpl implements KitchenDAO {
 
-  private static final Logger LOG = Logger.getLogger(KitchenDAOImpl.class);
+    private static final Logger LOG = Logger.getLogger(KitchenDAOImpl.class);
 
-  @Inject
-  EntityManager entityManager;
+    @Inject
+    EntityManager entityManager;
 
-  private final MeterRegistry registry;
+    private final MeterRegistry registry;
 
-  KitchenDAOImpl(MeterRegistry registry) {
-    this.registry = registry;
-  }
-
-  /**
-   * Retrieves a recipe from the KitchenRecipeDB based on the specified name.
-   *
-   * <p>
-   * This method searches for a recipe in the database with a matching name. If
-   * found, it returns
-   * the Recipe object representing the recipe. If no recipe is found, it
-   * returns null.
-   *
-   * @param name the name of the recipe to retrieve
-   * @return the Recipe object representing the retrieved recipe, or null if the
-   *         recipe is not found
-   * @throws IllegalArgumentException               if the name parameter is
-   *                                                null
-   *                                                or empty
-   * @throws javax.persistence.PersistenceException if an error occurs during
-   *                                                the
-   *                                                database operation
-   * @see Recipe
-   */
-  @Override
-  @Transactional
-  @Timed("kitchen.service.time.to.retrieve.recipe.from.db")
-  public Recipe retrieveReceipeFromDB(String name) {
-    LOG.info("Retrieving recipe from KitchenRecipeDB: " + name);
-    String capName = WordUtils.capitalize(name);
-    try {
-      Recipe recipe = entityManager
-          .createQuery("SELECT r FROM Recipe r WHERE r.name = :name",
-              Recipe.class)
-          .setParameter("name", capName)
-          .getSingleResult();
-      LOG.info("Recipe successfully retrieved from KitchenRecipeDB: " +
-          recipe.toString());
-      return recipe;
-    } catch (NoResultException e) {
-      registry.counter("kitchen.service.amount.of.failed.db.retrievals");
-      LOG.warn("Recipe not found in BaristaRecipeDB: " + name);
-      return null;
-    } catch (HibernateException e) {
-      LOG.error("Orders could not be retrieved from teh DB: " + e.getMessage());
-      return null;
+    KitchenDAOImpl(MeterRegistry registry) {
+        this.registry = registry;
     }
-  }
 
-  public List<Recipe> getAllRecipesFromDB() {
-    List<Recipe> recipes = null;
-    try {
-      String jpql = "SELECT r FROM Recipe r";
-      TypedQuery<Recipe> typedQuery = entityManager.createQuery(jpql, Recipe.class);
-      recipes = typedQuery.getResultList();
-      LOG.info(
-       "Recipes have been successfully retrieved from the KitchenRecipeDB");
-    } catch (HibernateException e) {
-      LOG.error("Orders could not be retrieved from the DB: " + e.getMessage());
+    /**
+     * Retrieves a recipe from the KitchenRecipeDB based on the specified name.
+     *
+     * <p>
+     * This method searches for a recipe in the database with a matching name. If
+     * found, it returns
+     * the Recipe object representing the recipe. If no recipe is found, it
+     * returns null.
+     *
+     * @param name the name of the recipe to retrieve
+     * @return the Recipe object representing the retrieved recipe, or null if the
+     *         recipe is not found
+     * @throws IllegalArgumentException               if the name parameter is
+     *                                                null
+     *                                                or empty
+     * @throws javax.persistence.PersistenceException if an error occurs during
+     *                                                the
+     *                                                database operation
+     * @see Recipe
+     */
+    @Override
+    @Transactional
+    @Timed("kitchen.service.time.to.retrieve.recipe.from.db")
+    public Recipe retrieveReceipeFromDB(String name) {
+        LOG.info("Retrieving recipe from KitchenRecipeDB: " + name);
+        String capName = WordUtils.capitalize(name);
+        try {
+            Recipe recipe = entityManager
+                    .createQuery("SELECT r FROM Recipe r WHERE r.name = :name",
+                            Recipe.class)
+                    .setParameter("name", capName)
+                    .getSingleResult();
+            LOG.info("Recipe successfully retrieved from KitchenRecipeDB: " +
+                    recipe.toString());
+            return recipe;
+        } catch (NoResultException e) {
+            registry.counter("kitchen.service.amount.of.failed.db.retrievals").increment();
+            LOG.warn("Recipe not found in BaristaRecipeDB: " + name);
+            return null;
+        } catch (HibernateException e) {
+            LOG.error("Orders could not be retrieved from teh DB: " + e.getMessage());
+            return null;
+        }
     }
-    return recipes;
-  }
+
+    public List<Recipe> getAllRecipesFromDB() {
+        List<Recipe> recipes = null;
+        try {
+            String jpql = "SELECT r FROM Recipe r";
+            TypedQuery<Recipe> typedQuery = entityManager.createQuery(jpql, Recipe.class);
+            recipes = typedQuery.getResultList();
+            LOG.info("Recipes have been successfully retrieved from the KitchenRecipeDB");
+        } catch (HibernateException e) {
+            LOG.error("Orders could not be retrieved from the DB: " + e.getMessage());
+        }
+        return recipes;
+    }
 }
