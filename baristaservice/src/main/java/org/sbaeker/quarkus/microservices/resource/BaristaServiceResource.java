@@ -91,5 +91,5 @@ public class BaristaServiceResource {
         LOG.info("Recipes retrieved successfully");
         return Response.ok(orders).build();
     }
-    
+
 }

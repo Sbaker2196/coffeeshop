@@ -54,7 +54,7 @@ public class BaristaDAOImpl implements BaristaDAO {
     EntityManager entityManager;
 
     private final MeterRegistry registry;
-
+    
     BaristaDAOImpl(MeterRegistry registry) {
         this.registry = registry;
     }
@@ -109,11 +109,29 @@ public class BaristaDAOImpl implements BaristaDAO {
             String jpql = "SELECT r FROM Recipe r";
             TypedQuery<Recipe> typedQuery = entityManager.createQuery(jpql, Recipe.class);
             recipes = typedQuery.getResultList();
-            LOG.info("Orders have been successfully retrieven from the BaristaRecipeDB");
+            LOG.info("Recipes have been successfully retrieven from the BaristaRecipeDB");
             return recipes;
         } catch (HibernateException e) {
             registry.counter("barista.service.amount.of.failed.recipe.retrievals.all.from.db").increment();
             LOG.error("Error retrieving all recipes from DB: " + e.getMessage());
+            return null;
+        }
+    }
+   
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    public Recipe getRecipeByArticleName(String name){
+        Recipe recipe = null;
+        try {
+            String jpql = "SELECT r FROM Recipe r WHERE r.name := name";
+            TypedQuery<Recipe> typedQuery = entityManager.createQuery(jpql, Recipe.class);
+            recipe = typedQuery.getSingleResult();
+            LOG.info("Recipe has been successfully retrieved from the BaristaRecipeDB");
+            registry.counter("barista.service.amount.of.retrieved.single.recipes");
+            return recipe;
+        } catch (Exception e) {
+            registry.counter("barista.service.amount.of.failed.single.recipe.retrievals");
+            LOG.error("Error retrieving recipe from DB: " + e.getMessage());
             return null;
         }
     }
